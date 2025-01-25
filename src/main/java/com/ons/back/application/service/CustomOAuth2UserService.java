@@ -1,5 +1,7 @@
-package com.ons.back.commons.security;
+package com.ons.back.application.service;
 
+import com.ons.back.commons.dto.OAuth2UserInfo;
+import com.ons.back.commons.dto.PrincipalDetails;
 import com.ons.back.persistence.domain.User;
 import com.ons.back.persistence.repository.UserRepository;
 import jakarta.transaction.Transactional;

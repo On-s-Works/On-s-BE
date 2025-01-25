@@ -1,7 +1,9 @@
-package com.ons.back.commons.security;
+package com.ons.back.commons.filter;
 
+import com.ons.back.commons.utils.TokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -27,11 +29,13 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         String accessToken = resolveToken(request);
+        String refreshToken = resolveRefreshToken(request);
 
         if (tokenProvider.validateToken(accessToken)) {
             setAuthentication(accessToken);
         } else {
-            String reissueAccessToken = tokenProvider.reissueAccessToken(accessToken);
+
+            String reissueAccessToken = tokenProvider.reissueAccessToken(accessToken, refreshToken);
 
             if (StringUtils.hasText(reissueAccessToken)) {
                 setAuthentication(reissueAccessToken);
@@ -53,5 +57,16 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             return null;
         }
         return token.substring(TOKEN_PREFIX.length());
+    }
+
+    private String resolveRefreshToken(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+
+        for(Cookie cookie : cookies) {
+            if(cookie.getName().equals("refresh_token")) {
+                return cookie.getValue();
+            }
+        }
+        return null;
     }
 }

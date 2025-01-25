@@ -24,16 +24,16 @@ public class User {
     @Column(name = "uid")
     private String uid;
 
-    @Column(name = "password", nullable = true)
+    @Column(name = "password")
     private String password;
 
-    @Column(name = "username", nullable = false)
+    @Column(name = "username")
     private String username;
 
     @Column(name = "birthday")
     private Date birthday;
 
-    @Column(name = "email", unique = true, nullable = false)
+    @Column(name = "email")
     private String email;
 
     @Column(name = "phone_number")
@@ -54,8 +54,9 @@ public class User {
     private Role role;
 
     @Builder
-    public User(Long userId, String password, String username, Date birthday, String email, String phoneNumber, Boolean agreeTerms, String userKey, ProviderType providerType, Role role) {
+    public User(Long userId, String uid, String password, String username, Date birthday, String email, String phoneNumber, Boolean agreeTerms, String userKey, ProviderType providerType, Role role) {
         this.userId = userId;
+        this.uid = uid;
         this.password = password;
         this.username = username;
         this.birthday = birthday;

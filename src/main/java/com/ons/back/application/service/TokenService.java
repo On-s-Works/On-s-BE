@@ -17,7 +17,7 @@ public class TokenService {
 
     private final TokenRepository tokenRepository;
 
-    public void saveOrUpdate(String userKey, String refreshToken, String accessToken) {
+    public String saveOrUpdate(String userKey, String refreshToken, String accessToken) {
 
         Token token = tokenRepository.findByAccessToken(accessToken)
                 .orElseGet(() -> tokenRepository.save(Token.builder()
@@ -27,6 +27,8 @@ public class TokenService {
                         .build()));
 
         token.updateRefreshToken(refreshToken);
+
+        return refreshToken;
     }
 
     public Token findByAccessTokenOrThrow(String accessToken) {

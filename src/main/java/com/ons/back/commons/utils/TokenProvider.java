@@ -1,4 +1,4 @@
-package com.ons.back.commons.security;
+package com.ons.back.commons.utils;
 
 import com.ons.back.application.service.TokenService;
 import com.ons.back.commons.exception.TokenException;
@@ -34,7 +34,7 @@ public class TokenProvider {
 
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30L;
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60L * 24 * 7;
-    private static final String KEY_ROLE = "role";
+    private static final String KEY_ROLE = "ROLE_USER";
 
     @Autowired
     public TokenProvider(TokenService tokenService, @Value("${jwt.key}") String key) {
@@ -46,9 +46,9 @@ public class TokenProvider {
         return generateToken(authentication, ACCESS_TOKEN_EXPIRE_TIME);
     }
 
-    public void generateRefreshToken(Authentication authentication, String accessToken) {
+    public String generateRefreshToken(Authentication authentication, String accessToken) {
         String refreshToken = generateToken(authentication, REFRESH_TOKEN_EXPIRE_TIME);
-        tokenService.saveOrUpdate(authentication.getName(), refreshToken, accessToken);
+        return tokenService.saveOrUpdate(authentication.getName(), refreshToken, accessToken);
     }
 
     private String generateToken(Authentication authentication, long expireTime) {
@@ -81,12 +81,11 @@ public class TokenProvider {
                 claims.get(KEY_ROLE).toString()));
     }
 
-    public String reissueAccessToken(String accessToken) {
+    public String reissueAccessToken(String accessToken, String refreshToken) {
         if (StringUtils.hasText(accessToken)) {
             Token token = tokenService.findByAccessTokenOrThrow(accessToken);
-            String refreshToken = token.getRefreshToken();
 
-            if (validateToken(refreshToken)) {
+            if(refreshToken.equals(token.getRefreshToken()) && validateToken(refreshToken)) {
                 String reissueAccessToken = generateAccessToken(getAuthentication(refreshToken));
                 tokenService.updateToken(reissueAccessToken, token);
                 return reissueAccessToken;

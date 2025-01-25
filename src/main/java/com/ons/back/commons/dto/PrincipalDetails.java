@@ -1,4 +1,4 @@
-package com.ons.back.commons.security;
+package com.ons.back.commons.dto;
 
 import com.ons.back.persistence.domain.User;
 import org.springframework.security.core.GrantedAuthority;

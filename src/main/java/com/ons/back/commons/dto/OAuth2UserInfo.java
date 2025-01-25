@@ -1,4 +1,4 @@
-package com.ons.back.commons.security;
+package com.ons.back.commons.dto;
 
 import com.ons.back.commons.exception.ApplicationException;
 import com.ons.back.commons.exception.payload.ErrorStatus;

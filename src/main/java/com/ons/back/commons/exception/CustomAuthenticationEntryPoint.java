@@ -1,4 +1,4 @@
-package com.ons.back.commons.security;
+package com.ons.back.commons.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

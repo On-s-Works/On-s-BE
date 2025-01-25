@@ -93,6 +93,9 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(
+                                        new AntPathRequestMatcher("/login/oauth2/code/google"),
+                                        new AntPathRequestMatcher("/error"),
+                                        new AntPathRequestMatcher("/favicon.ico"),
                                         new AntPathRequestMatcher("/"),
                                         new AntPathRequestMatcher("/auth/signup"),
                                         new AntPathRequestMatcher("/oauth2/**"),

@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Table(name = "user")
@@ -31,7 +32,7 @@ public class User {
     private String username;
 
     @Column(name = "birthday")
-    private Date birthday;
+    private LocalDate birthday;
 
     @Column(name = "email")
     private String email;
@@ -54,7 +55,7 @@ public class User {
     private Role role;
 
     @Builder
-    public User(Long userId, String uid, String password, String username, Date birthday, String email, String phoneNumber, Boolean agreeTerms, String userKey, ProviderType providerType, Role role) {
+    public User(Long userId, String uid, String password, String username, LocalDate birthday, String email, String phoneNumber, Boolean agreeTerms, String userKey, ProviderType providerType, Role role) {
         this.userId = userId;
         this.uid = uid;
         this.password = password;

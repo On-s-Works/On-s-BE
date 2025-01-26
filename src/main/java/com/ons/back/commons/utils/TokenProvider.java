@@ -1,6 +1,7 @@
 package com.ons.back.commons.utils;
 
 import com.ons.back.application.service.TokenService;
+import com.ons.back.commons.dto.TokenResponse;
 import com.ons.back.commons.exception.TokenException;
 import com.ons.back.commons.exception.payload.ErrorStatus;
 import com.ons.back.persistence.domain.Token;
@@ -81,14 +82,19 @@ public class TokenProvider {
                 claims.get(KEY_ROLE).toString()));
     }
 
-    public String reissueAccessToken(String accessToken, String refreshToken) {
+    public TokenResponse reissueAccessToken(String accessToken, String refreshToken) {
         if (StringUtils.hasText(accessToken)) {
             Token token = tokenService.findByAccessTokenOrThrow(accessToken);
 
             if(refreshToken.equals(token.getRefreshToken()) && validateToken(refreshToken)) {
                 String reissueAccessToken = generateAccessToken(getAuthentication(refreshToken));
-                tokenService.updateToken(reissueAccessToken, token);
-                return reissueAccessToken;
+                String reissueRefreshToken = generateRefreshToken(getAuthentication(refreshToken), refreshToken);
+                tokenService.updateToken(reissueAccessToken, reissueRefreshToken ,token);
+
+                return TokenResponse.builder()
+                        .accessToken(reissueAccessToken)
+                        .refreshToken(reissueRefreshToken)
+                        .build();
             }
         }
         return null;

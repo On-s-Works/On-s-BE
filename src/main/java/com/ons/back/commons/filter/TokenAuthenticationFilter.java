@@ -1,5 +1,6 @@
 package com.ons.back.commons.filter;
 
+import com.ons.back.commons.dto.TokenResponse;
 import com.ons.back.commons.utils.TokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -26,20 +27,20 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     public static final String TOKEN_PREFIX = "Bearer ";
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
         String accessToken = resolveToken(request);
         String refreshToken = resolveRefreshToken(request);
 
         if (tokenProvider.validateToken(accessToken)) {
             setAuthentication(accessToken);
         } else {
+            TokenResponse reissuedToken = tokenProvider.reissueAccessToken(accessToken, refreshToken);
 
-            String reissueAccessToken = tokenProvider.reissueAccessToken(accessToken, refreshToken);
-
-            if (StringUtils.hasText(reissueAccessToken)) {
-                setAuthentication(reissueAccessToken);
-                response.setHeader(AUTHORIZATION, TOKEN_PREFIX + reissueAccessToken);
+            if(StringUtils.hasText(reissuedToken.accessToken()) && StringUtils.hasText(reissuedToken.refreshToken())){
+                setAuthentication(reissuedToken.accessToken());
+                response.setHeader(AUTHORIZATION, TOKEN_PREFIX + reissuedToken.accessToken());
+                setRefreshTokenCookie(response, reissuedToken.refreshToken());
             }
         }
 
@@ -68,5 +69,14 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             }
         }
         return null;
+    }
+
+    public void setRefreshTokenCookie(HttpServletResponse response, String refreshToken) {
+        Cookie cookie = new Cookie("refresh_token", refreshToken);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(7 * 24 * 60 * 60);
+        response.addCookie(cookie);
     }
 }

@@ -38,7 +38,8 @@ public class TokenService {
     }
 
     @Transactional
-    public void updateToken(String accessToken, Token token) {
+    public void updateToken(String accessToken, String refreshToken, Token token) {
         token.updateAccessToken(accessToken);
+        token.updateRefreshToken(refreshToken);
     }
 }

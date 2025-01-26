@@ -1,8 +1,8 @@
 package com.ons.back.application.service;
 
+import com.ons.back.commons.dto.PrincipalDetails;
 import com.ons.back.commons.exception.ApplicationException;
 import com.ons.back.commons.exception.payload.ErrorStatus;
-import com.ons.back.commons.dto.CustomUserDetails;
 import com.ons.back.persistence.domain.User;
 import com.ons.back.persistence.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -29,6 +29,6 @@ public class CustomUserDetailsService implements UserDetailsService {
                         ErrorStatus.toErrorStatus("해당하는 유저가 없습니다.", 404, LocalDateTime.now())
                 ));
 
-        return new CustomUserDetails(user);
+        return new PrincipalDetails(user, null, null);
     }
 }

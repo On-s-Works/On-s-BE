@@ -2,12 +2,10 @@ package com.ons.back.presentation.controller;
 
 import com.ons.back.application.service.AuthService;
 import com.ons.back.presentation.dto.request.SignUpRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,6 +17,12 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<Void> signUp(@RequestBody SignUpRequest request) {
         authService.signUp(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("logout")
+    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String accessToken, HttpServletResponse response) {
+        authService.logout(accessToken, response);
         return ResponseEntity.ok().build();
     }
 

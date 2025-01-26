@@ -2,8 +2,12 @@ package com.ons.back.application.service;
 
 import com.ons.back.commons.exception.ApplicationException;
 import com.ons.back.commons.exception.payload.ErrorStatus;
+import com.ons.back.persistence.domain.Token;
+import com.ons.back.persistence.repository.TokenRepository;
 import com.ons.back.persistence.repository.UserRepository;
 import com.ons.back.presentation.dto.request.SignUpRequest;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,6 +19,7 @@ import java.time.LocalDateTime;
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
 
     public void signUp(SignUpRequest request) {
@@ -26,5 +31,14 @@ public class AuthService {
                 }, () -> {
                     userRepository.save(request.toEntity(passwordEncoder));
                 });
+    }
+
+    public void logout(String accessToken, HttpServletResponse response) {
+        tokenRepository.deleteByAccessToken(accessToken);
+        Cookie cookie = new Cookie("refresh_token", null);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        response.setHeader("Authorization", "");
     }
 }

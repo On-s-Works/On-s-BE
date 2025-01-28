@@ -1,4 +1,4 @@
-FROM openjdk:21-jre-slim
+FROM openjdk:21-jdk-slim
 
 LABEL maintainer="wnstj0614@naver.com"
 LABEL description="On's Backend API 서버입니다."

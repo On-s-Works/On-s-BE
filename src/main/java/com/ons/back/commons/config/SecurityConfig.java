@@ -111,7 +111,7 @@ public class SecurityConfig {
         )
 
                 .addFilterBefore(new CustomLoginFilter(authenticationManager(configuration), tokenProvider), UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(tokenAuthenticationFilter, OAuth2LoginAuthenticationFilter.class)
+                .addFilterBefore(tokenAuthenticationFilter, CustomLoginFilter.class)
                 .addFilterBefore(new TokenExceptionFilter(), tokenAuthenticationFilter.getClass())
 
                 .exceptionHandling((exceptions) -> exceptions

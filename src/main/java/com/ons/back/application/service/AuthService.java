@@ -34,6 +34,7 @@ public class AuthService {
     }
 
     public void logout(String accessToken, HttpServletResponse response) {
+        accessToken = accessToken.substring(7);
         tokenRepository.deleteByAccessToken(accessToken);
         Cookie cookie = new Cookie("refresh_token", null);
         cookie.setPath("/");

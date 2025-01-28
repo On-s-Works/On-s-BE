@@ -1,0 +1,65 @@
+name: Java CI with Docker
+
+on:
+  pull_request:
+    branches: ["main" ]
+
+permissions: write-all
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Generate application.properties file
+        run: |
+          mkdir -p src/main/resources
+          echo "${{ secrets.APPLICATION_PROPERTIES }}" > src/main/resources/application.properties
+
+      - name: Grant execute permission for Gradle Wrapper
+        run: chmod +x ./gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: Publish Unit Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          check_name: 'Gradle Test Results'
+          junit_files: build/test-results/test/**/*.xml
+
+      - name: Upload JAR & Dockerfile to Remote Server
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          REMOTE_USER: ${{ secrets.SSH_USER }}
+          REMOTE_HOST: ${{ secrets.SSH_HOST }}
+          REMOTE_DIR: ${{ secrets.REMOTE_DIR }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "${SSH_PRIVATE_KEY}" > ~/.ssh/github_rsa
+          chmod 400 ~/.ssh/github_rsa
+          ssh-keyscan ${REMOTE_HOST} >> ~/.ssh/known_hosts
+          scp -i ~/.ssh/github_rsa -o StrictHostKeyChecking=no Dockerfile ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR}
+          scp -i ~/.ssh/github_rsa -o StrictHostKeyChecking=no build/libs/*.jar ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR}
+
+      - name: Build Docker Image on Remote Server
+        env:
+          REMOTE_USER: ${{ secrets.SSH_USER }}
+          REMOTE_HOST: ${{ secrets.SSH_HOST }}
+          REMOTE_DIR: ${{ secrets.REMOTE_DIR }}
+        run: |
+          ssh -i ~/.ssh/github_rsa -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} "
+            cd ${REMOTE_DIR} &&
+            docker build -t ons .
+          "

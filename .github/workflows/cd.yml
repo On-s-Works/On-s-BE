@@ -1,0 +1,28 @@
+name: Java CD with Docker
+
+on:
+  push:
+    branches: ["main" ]
+
+permissions: write-all
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Run Docker Container on Remote Server
+        env:
+          REMOTE_USER: ${{ secrets.SSH_USER }}
+          REMOTE_HOST: ${{ secrets.SSH_HOST }}
+          REMOTE_DIR: ${{ secrets.REMOTE_DIR }}
+          APP_PORT: 8080
+        run: |
+          ssh -i ~/.ssh/github_rsa -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} "
+            cd ${REMOTE_DIR} &&
+            docker stop ons || true && docker rm ons || true &&
+            docker run -d --name ons -p ${APP_PORT}:${APP_PORT} ons
+          "

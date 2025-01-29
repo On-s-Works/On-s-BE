@@ -10,12 +10,17 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -28,6 +33,13 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
+        String uri = request.getRequestURI();
+
+        if(shouldSkipFilter(uri)){
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         String accessToken = resolveToken(request);
         String refreshToken = resolveRefreshToken(request);
@@ -45,6 +57,26 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private boolean shouldSkipFilter(String uri) {
+        AntPathMatcher pathMatcher = new AntPathMatcher();
+
+        List<String> skippedUris = Arrays.asList(
+                "/favicon.ico",
+                "/error",
+                "/swagger-ui.html",
+                "/swagger-ui/**",
+                "/v3/api-docs/**"
+        );
+
+        for (String skippedUri : skippedUris) {
+            if (pathMatcher.match(skippedUri, uri)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void setAuthentication(String accessToken) {

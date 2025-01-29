@@ -94,21 +94,28 @@ public class SecurityConfig {
                         request.requestMatchers(
                                         new AntPathRequestMatcher("/login/oauth2/code/google"),
                                         new AntPathRequestMatcher("/error"),
-                                        new AntPathRequestMatcher("/favicon.ico"),
                                         new AntPathRequestMatcher("/"),
                                         new AntPathRequestMatcher("/auth/signup"),
                                         new AntPathRequestMatcher("/oauth2/**"),
                                         new AntPathRequestMatcher("/login/**"),
-                                        new AntPathRequestMatcher("/logout/**")
+                                        new AntPathRequestMatcher("/logout/**"),
+                                        new AntPathRequestMatcher("/swagger-ui.html"),
+                                        new AntPathRequestMatcher("/swagger-ui/**"),
+                                        new AntPathRequestMatcher("/v3/api-docs"),
+                                        new AntPathRequestMatcher("/v3/api-docs/**"),
+                                        new AntPathRequestMatcher("/swagger-resources"),
+                                        new AntPathRequestMatcher("/swagger-resources/**"),
+                                        new AntPathRequestMatcher("/webjars/**"),
+                                        new AntPathRequestMatcher("/api-docs/**"),
+                                        new AntPathRequestMatcher("/favicon.ico")
                                 ).permitAll()
-                .anyRequest().authenticated()
+                                .anyRequest().authenticated()
                 )
 
                 .oauth2Login(oauth ->
                 oauth.userInfoEndpoint(c -> c.userService(oAuth2UserService))
                         .successHandler(oAuth2SuccessHandler)
         )
-
                 .addFilterBefore(new CustomLoginFilter(authenticationManager(configuration), tokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(tokenAuthenticationFilter, CustomLoginFilter.class)
                 .addFilterBefore(new TokenExceptionFilter(), tokenAuthenticationFilter.getClass())

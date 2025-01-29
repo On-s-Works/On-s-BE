@@ -30,4 +30,5 @@ jobs:
             cd ${REMOTE_DIR} &&
             docker stop ons || true && docker rm ons || true &&
             docker run --network host -d --name ons -p ${APP_PORT}:${APP_PORT} ons
+            docker image prune -a
           "

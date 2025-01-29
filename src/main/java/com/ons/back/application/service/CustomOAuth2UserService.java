@@ -4,13 +4,13 @@ import com.ons.back.commons.dto.OAuth2UserInfo;
 import com.ons.back.commons.dto.PrincipalDetails;
 import com.ons.back.persistence.domain.User;
 import com.ons.back.persistence.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 

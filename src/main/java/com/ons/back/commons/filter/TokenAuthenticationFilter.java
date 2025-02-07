@@ -10,12 +10,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -46,7 +44,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
         if (tokenProvider.validateToken(accessToken)) {
             setAuthentication(accessToken);
-        } else {
+        } else if(tokenProvider.validateToken(refreshToken)) {
             TokenResponse reissuedToken = tokenProvider.reissueAccessToken(accessToken, refreshToken);
 
             if(StringUtils.hasText(reissuedToken.accessToken()) && StringUtils.hasText(reissuedToken.refreshToken())){
@@ -67,7 +65,10 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 "/error",
                 "/swagger-ui.html",
                 "/swagger-ui/**",
-                "/v3/api-docs/**"
+                "/v3/api-docs/**",
+                "/oauth2/**",
+                "/login/oauth2/**",
+                "/auth/**"
         );
 
         for (String skippedUri : skippedUris) {

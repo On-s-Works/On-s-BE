@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>On's 인증 메일</title>
+
+</head>
+<div style="HEIGHT: 100%; WIDTH: 100%; Z-INDEX: 1; LETTER-SPACING: 0px; LINE-HEIGHT: 1;">
+  <div style="MAX-WIDTH: 600px; MARGIN: 0px auto; TEXT-ALIGN: center;">
+
+    <p style="FONT-SIZE: 20px; FONT-WEIGHT: 400; COLOR: #000; padding-top: 30px; MARGIN: 0;">[[${guideText}]]</p>
+
+    <div style="BACKGROUND-COLOR: #fff; MARGIN: 20px 20px 0;">
+      <div style="PADDING: 34px 10px;">
+        <p style="FONT-SIZE: 16px; FONT-WEIGHT: 500; COLOR: #000000; MARGIN: 0;">인증 코드 :</p>
+        <p style="FONT-SIZE: 30px; FONT-WEIGHT: 500; COLOR: #000000; MARGIN: 0; PADDING-TOP : 10px;" th:text="${code}"></p>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

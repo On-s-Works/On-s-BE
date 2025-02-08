@@ -22,6 +22,7 @@ public record OAuth2UserInfo(
         return switch(registrationId) {
             case "google" -> ofGoogle(attributes);
             case "kakao" -> ofKakao(attributes);
+            case "naver" -> ofNaver(attributes);
             default -> throw new ApplicationException(ErrorStatus.toErrorStatus(
                     "해당하는 registrationId가 없습니다.", 404, LocalDateTime.now()
             ));
@@ -46,6 +47,18 @@ public record OAuth2UserInfo(
                 .email((String) account.get("email"))
                 .profile((String) profile.get("profile_image_url"))
                 .providerType(ProviderType.KAKAO)
+                .build();
+    }
+
+    private static OAuth2UserInfo ofNaver(Map<String, Object> attributes) {
+
+        Map<String, Object> response = (Map<String, Object>) attributes.get("response");
+
+        return OAuth2UserInfo.builder()
+                .name((String) response.get("name"))
+                .email((String) response.get("email"))
+                .profile(null)
+                .providerType(ProviderType.NAVER)
                 .build();
     }
 

@@ -93,6 +93,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(
                                         new AntPathRequestMatcher("/login/oauth2/code/google"),
+                                        new AntPathRequestMatcher("/login/oauth2/code/kakao"),
+                                        new AntPathRequestMatcher("/login/oauth2/code/naver"),
+                                        new AntPathRequestMatcher("/sms/send"),
+                                        new AntPathRequestMatcher("/sms/check"),
+                                        new AntPathRequestMatcher("/email/send"),
+                                        new AntPathRequestMatcher("/email/check"),
                                         new AntPathRequestMatcher("/error"),
                                         new AntPathRequestMatcher("/"),
                                         new AntPathRequestMatcher("/auth/signup"),

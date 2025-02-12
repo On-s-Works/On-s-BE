@@ -15,10 +15,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/email")
 @Tag(name = "이메일 API", description = "이메일 API")
 public class EmailController {
 
@@ -30,7 +32,7 @@ public class EmailController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청", content = @Content),
             @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content)
     })
-    @PostMapping("/send-email")
+    @PostMapping("/send")
     public ResponseEntity<Void> sendEmail(@RequestBody @Valid SendEmailRequest request, BindingResult bindingResult){
 
         if(bindingResult.hasErrors()) {
@@ -48,7 +50,7 @@ public class EmailController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청", content = @Content),
             @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content)
     })
-    @PostMapping("/check-code")
+    @PostMapping("/check")
     public ResponseEntity<Void> checkCode(@RequestBody @Valid EmailAuthRequest request, BindingResult bindingResult) {
 
         if(bindingResult.hasErrors()) {

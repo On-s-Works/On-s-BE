@@ -57,6 +57,9 @@ dependencies {
     //mail
     implementation 'org.springframework.boot:spring-boot-starter-mail'
 
+    //cool sms
+    implementation 'net.nurigo:sdk:4.3.2'
+
     //thymeleaf
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'

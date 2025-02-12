@@ -5,7 +5,8 @@ import com.ons.back.persistence.domain.type.StoreType;
 public record UpdateStoreRequest(
         Long storeId,
         String storeName,
-        String storeAddress,
+        String baseAddress,
+        String addressDetail,
         StoreType storeType
 ) {
 }

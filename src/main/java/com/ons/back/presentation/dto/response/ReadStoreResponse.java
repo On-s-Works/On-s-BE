@@ -7,13 +7,15 @@ import lombok.Builder;
 @Builder
 public record ReadStoreResponse(
         String storeName,
-        String storeAddress,
+        String baseAddress,
+        String addressDetail,
         StoreType storeType
 ) {
     public static ReadStoreResponse fromEntity(Store store) {
         return ReadStoreResponse.builder()
                 .storeName(store.getStoreName())
-                .storeAddress(store.getStoreAddress())
+                .baseAddress(store.getBaseAddress())
+                .addressDetail(store.getAddressDetail())
                 .storeType(store.getStoreType())
                 .build();
     }

@@ -68,7 +68,8 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 "/v3/api-docs/**",
                 "/oauth2/**",
                 "/login/oauth2/**",
-                "/auth/**"
+                "/auth/**",
+                "/login"
         );
 
         for (String skippedUri : skippedUris) {

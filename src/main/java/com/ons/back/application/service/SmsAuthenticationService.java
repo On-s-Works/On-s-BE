@@ -32,7 +32,7 @@ public class SmsAuthenticationService {
 
         List<PhoneAuthentication> phoneAuthenticationList = phoneAuthenticationRepository.findByPhoneNumberAndAuthType(request.to(), AuthType.JOIN);
         phoneAuthenticationList.forEach(emailAuthentication -> emailAuthentication.updateIsActive((byte)0));
-        PhoneAuthentication phoneAuthentication = request.toJoinEntity(authCode);
+        PhoneAuthentication phoneAuthentication = request.toResetEntity(authCode);
         phoneAuthenticationRepository.save(phoneAuthentication);
     }
 

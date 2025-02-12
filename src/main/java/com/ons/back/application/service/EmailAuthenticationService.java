@@ -33,7 +33,7 @@ public class EmailAuthenticationService {
         List<EmailAuthentication> emailAuthenticationList = emailAuthenticationRepository.findByEmailAndAuthType(request.email(), AuthType.JOIN);
         emailAuthenticationList.forEach(emailAuthentication -> emailAuthentication.updateIsActive((byte)0));
 
-        emailAuthenticationRepository.save(request.toJoinEntity(authCode));
+        emailAuthenticationRepository.save(request.toResetEntity(authCode));
     }
 
     public void checkEmailAuthCode(EmailAuthRequest request) {

@@ -66,7 +66,7 @@ public class StoreService {
 
     public void updateStoreAddress(String userKey, UpdateStoreRequest request) {
         Store store = validateStoreOwner(userKey, request.storeId());
-        store.updateAddress(request.storeAddress());
+        store.updateAddress(request.baseAddress(), request.addressDetail());
     }
 
     public void updateStoreType(String userKey, UpdateStoreRequest request) {

@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Table(name = "user")
 @Entity
@@ -53,6 +52,10 @@ public class User {
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    public void updatePassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
 
     @Builder
     public User(Long userId, String uid, String password, String username, LocalDate birthday, String email, String phoneNumber, Boolean agreeTerms, String userKey, ProviderType providerType, Role role) {

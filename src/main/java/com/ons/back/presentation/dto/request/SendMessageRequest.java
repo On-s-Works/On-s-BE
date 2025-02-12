@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 public record SendMessageRequest(
         String to
 ) {
-    public PhoneAuthentication toJoinEntity(String authCode) {
+    public PhoneAuthentication toResetEntity(String authCode) {
         return PhoneAuthentication.builder()
                 .phoneNumber(to)
                 .authCode(authCode)

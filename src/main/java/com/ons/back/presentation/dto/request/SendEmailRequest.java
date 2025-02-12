@@ -13,11 +13,11 @@ public record SendEmailRequest(
         String email
 
 ) {
-    public EmailAuthentication toJoinEntity(String authCode) {
+    public EmailAuthentication toResetEntity(String authCode) {
         return EmailAuthentication.builder()
                 .email(email)
                 .authCode(authCode)
-                .authType(AuthType.JOIN)
+                .authType(AuthType.RESET)
                 .isActive((byte)1)
                 .build();
     }

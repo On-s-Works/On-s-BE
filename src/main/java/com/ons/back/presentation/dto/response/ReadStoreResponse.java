@@ -6,14 +6,18 @@ import lombok.Builder;
 
 @Builder
 public record ReadStoreResponse(
+        Long id,
         String storeName,
-        String storeAddress,
+        String baseAddress,
+        String addressDetail,
         StoreType storeType
 ) {
     public static ReadStoreResponse fromEntity(Store store) {
         return ReadStoreResponse.builder()
+                .id(store.getStoreId())
                 .storeName(store.getStoreName())
-                .storeAddress(store.getStoreAddress())
+                .baseAddress(store.getBaseAddress())
+                .addressDetail(store.getAddressDetail())
                 .storeType(store.getStoreType())
                 .build();
     }

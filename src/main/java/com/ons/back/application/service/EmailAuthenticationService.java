@@ -3,7 +3,7 @@ package com.ons.back.application.service;
 import com.ons.back.commons.exception.ApplicationException;
 import com.ons.back.commons.exception.payload.ErrorStatus;
 import com.ons.back.persistence.domain.EmailAuthentication;
-import com.ons.back.persistence.domain.type.MailAuthType;
+import com.ons.back.persistence.domain.type.AuthType;
 import com.ons.back.persistence.repository.EmailAuthenticationRepository;
 import com.ons.back.presentation.dto.request.EmailAuthRequest;
 import com.ons.back.presentation.dto.request.SendEmailRequest;
@@ -30,10 +30,10 @@ public class EmailAuthenticationService {
 
         emailSendService.sendEmail(request.email(), authCode);
 
-        List<EmailAuthentication> emailAuthenticationList = emailAuthenticationRepository.findByEmailAndAuthType(request.email(), MailAuthType.JOIN);
+        List<EmailAuthentication> emailAuthenticationList = emailAuthenticationRepository.findByEmailAndAuthType(request.email(), AuthType.JOIN);
         emailAuthenticationList.forEach(emailAuthentication -> emailAuthentication.updateIsActive((byte)0));
 
-        emailAuthenticationRepository.save(request.toJoinEntity(authCode));
+        emailAuthenticationRepository.save(request.toResetEntity(authCode));
     }
 
     public void checkEmailAuthCode(EmailAuthRequest request) {

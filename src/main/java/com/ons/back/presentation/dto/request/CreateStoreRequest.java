@@ -6,14 +6,16 @@ import com.ons.back.persistence.domain.type.StoreType;
 
 public record CreateStoreRequest(
         String storeName,
-        String storeAddress,
+        String baseAddress,
+        String addressDetail,
         StoreType storeType
 ) {
     public Store toEntity(User user) {
         return Store.builder()
                 .user(user)
                 .storeName(storeName)
-                .storeAddress(storeAddress)
+                .baseAddress(baseAddress)
+                .addressDetail(addressDetail)
                 .storeType(storeType)
                 .build();
     }

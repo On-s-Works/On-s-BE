@@ -27,22 +27,31 @@ public class Store {
     @Column(name = "store_name")
     private String storeName;
 
-    @Column(name = "store_address")
-    private String storeAddress;
+    @Column(name = "base_address")
+    private String baseAddress;
 
-    @Column(name = "is_active")
+    @Column(name = "address_detail")
+    private String addressDetail;
+
+    @Column(name = "is_active", nullable = false)
     boolean isActive = true;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
+    @PrePersist
+    public void prePersist() {
+        this.isActive = true;
+    }
+
     public void updateName(String storeName) {
         this.storeName = storeName;
     }
 
-    public void updateAddress(String storeAddress) {
-        this.storeAddress = storeAddress;
+    public void updateAddress(String baseAddress, String addressDetail) {
+        this.baseAddress = baseAddress;
+        this.addressDetail = addressDetail;
     }
 
     public void updateStoreType(StoreType storeType) {
@@ -54,11 +63,12 @@ public class Store {
     }
 
     @Builder
-    public Store(Long storeId, StoreType storeType, String storeName, String storeAddress, Boolean isActive, User user) {
+    public Store(Long storeId, StoreType storeType, String storeName, String baseAddress, String addressDetail, boolean isActive, User user) {
         this.storeId = storeId;
         this.storeType = storeType;
         this.storeName = storeName;
-        this.storeAddress = storeAddress;
+        this.baseAddress = baseAddress;
+        this.addressDetail = addressDetail;
         this.isActive = isActive;
         this.user = user;
     }

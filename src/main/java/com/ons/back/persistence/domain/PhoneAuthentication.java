@@ -13,16 +13,16 @@ import java.time.LocalDateTime;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Table(name = "email_authentication")
-public class EmailAuthentication {
+@Table(name = "phone_authentication")
+public class PhoneAuthentication {
 
     @Id
-    @Column(name = "email_authentication_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "phone_authentication_id")
     private Long id;
 
-    @Column(name = "email")
-    private String email;
+    @Column(name = "phone_number")
+    private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "auth_type")
@@ -41,9 +41,9 @@ public class EmailAuthentication {
     public void updateIsActive(Byte isActive) {this.isActive = isActive;}
 
     @Builder
-    public EmailAuthentication(Long id, String email, AuthType authType, String authCode, Byte isActive, LocalDateTime createdAt) {
+    public PhoneAuthentication(Long id, String phoneNumber, AuthType authType, String authCode, Byte isActive, LocalDateTime createdAt) {
         this.id = id;
-        this.email = email;
+        this.phoneNumber = phoneNumber;
         this.authType = authType;
         this.authCode = authCode;
         this.isActive = isActive;

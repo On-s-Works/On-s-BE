@@ -47,8 +47,8 @@ public class EmailController {
     @Operation(summary = "이메일을 검증합니다.", description = "이메일을 검증합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "이메일 발송 성공"),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청", content = @Content),
-            @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content)
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     @PostMapping("/check")
     public ResponseEntity<Void> checkCode(@RequestBody @Valid EmailAuthRequest request, BindingResult bindingResult) {

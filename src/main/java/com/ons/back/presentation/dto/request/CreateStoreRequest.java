@@ -8,7 +8,9 @@ public record CreateStoreRequest(
         String storeName,
         String baseAddress,
         String addressDetail,
-        StoreType storeType
+        StoreType storeType,
+        boolean isManage,
+        boolean isSale
 ) {
     public Store toEntity(User user) {
         return Store.builder()
@@ -17,6 +19,8 @@ public record CreateStoreRequest(
                 .baseAddress(baseAddress)
                 .addressDetail(addressDetail)
                 .storeType(storeType)
+                .isManage(isManage)
+                .isSale(isSale)
                 .build();
     }
 }

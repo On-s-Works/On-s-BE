@@ -33,8 +33,14 @@ public class Store {
     @Column(name = "address_detail")
     private String addressDetail;
 
-    @Column(name = "is_active", nullable = false)
+    @Column(name = "is_active")
     boolean isActive = true;
+
+    @Column(name = "is_sale")
+    boolean isSale;
+
+    @Column(name = "is_manage")
+    boolean isManage;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -63,13 +69,15 @@ public class Store {
     }
 
     @Builder
-    public Store(Long storeId, StoreType storeType, String storeName, String baseAddress, String addressDetail, boolean isActive, User user) {
+    public Store(Long storeId, StoreType storeType, String storeName, String baseAddress, String addressDetail, boolean isActive, boolean isSale, boolean isManage, User user) {
         this.storeId = storeId;
         this.storeType = storeType;
         this.storeName = storeName;
         this.baseAddress = baseAddress;
         this.addressDetail = addressDetail;
         this.isActive = isActive;
+        this.isSale = isSale;
+        this.isManage = isManage;
         this.user = user;
     }
 }

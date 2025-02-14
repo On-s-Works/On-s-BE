@@ -10,7 +10,9 @@ public record ReadStoreResponse(
         String storeName,
         String baseAddress,
         String addressDetail,
-        StoreType storeType
+        StoreType storeType,
+        boolean isSale,
+        boolean isManage
 ) {
     public static ReadStoreResponse fromEntity(Store store) {
         return ReadStoreResponse.builder()
@@ -19,6 +21,8 @@ public record ReadStoreResponse(
                 .baseAddress(store.getBaseAddress())
                 .addressDetail(store.getAddressDetail())
                 .storeType(store.getStoreType())
+                .isSale(store.isSale())
+                .isManage(store.isManage())
                 .build();
     }
 }

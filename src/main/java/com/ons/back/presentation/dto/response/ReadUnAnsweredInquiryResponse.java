@@ -6,12 +6,12 @@ import lombok.Builder;
 @Builder
 public record ReadUnAnsweredInquiryResponse(
         Long id,
-        String title
+        String content
 ) {
     public static ReadUnAnsweredInquiryResponse fromEntity(Inquiry inquiry) {
         return ReadUnAnsweredInquiryResponse.builder()
                 .id(inquiry.getId())
-                .title(inquiry.getTitle())
+                .content(inquiry.getContent())
                 .build();
     }
 }

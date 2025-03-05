@@ -13,6 +13,7 @@ import com.ons.back.presentation.dto.response.ReadStoreResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -25,6 +26,7 @@ public class StoreService {
 
     private final StoreRepository storeRepository;
     private final UserRepository userRepository;
+    private final StorageService storageService;
 
     @Transactional(readOnly = true)
     public List<ReadStoreResponse> getStoreByUserId(String userKey) {
@@ -45,14 +47,16 @@ public class StoreService {
                 )));
     }
 
-    public void createStore(String userKey, CreateStoreRequest request) {
+    public void createStore(String userKey, CreateStoreRequest request, MultipartFile file) {
+
+        String imageUrl = storageService.uploadFirebaseBucket(file, "ons" + file.getOriginalFilename());
 
         User user = userRepository.findByUserKey(userKey)
                         .orElseThrow(() -> new ApplicationException(
                                 ErrorStatus.toErrorStatus("해당하는 유저가 없습니다.", 404, LocalDateTime.now())
                         ));
 
-        storeRepository.save(request.toEntity(user));
+        storeRepository.save(request.toEntity(user, imageUrl));
     }
 
     public List<StoreType> getStoreType() {

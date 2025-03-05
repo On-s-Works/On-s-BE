@@ -9,18 +9,21 @@ public record CreateStoreRequest(
         String baseAddress,
         String addressDetail,
         StoreType storeType,
+        String storeNumber,
         boolean isManage,
         boolean isSale
 ) {
-    public Store toEntity(User user) {
+    public Store toEntity(User user, String imageUrl) {
         return Store.builder()
                 .user(user)
                 .storeName(storeName)
                 .baseAddress(baseAddress)
                 .addressDetail(addressDetail)
                 .storeType(storeType)
+                .storeNumber(storeNumber)
                 .isManage(isManage)
                 .isSale(isSale)
+                .storeImage(imageUrl)
                 .build();
     }
 }

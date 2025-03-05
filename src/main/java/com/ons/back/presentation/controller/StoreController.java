@@ -2,7 +2,6 @@ package com.ons.back.presentation.controller;
 
 import com.ons.back.application.service.StoreService;
 import com.ons.back.commons.dto.PrincipalDetails;
-import com.ons.back.persistence.domain.type.StoreType;
 import com.ons.back.presentation.dto.request.CreateStoreRequest;
 import com.ons.back.presentation.dto.request.UpdateStoreRequest;
 import com.ons.back.presentation.dto.response.ReadStoreResponse;
@@ -98,17 +97,6 @@ public class StoreController {
     public ResponseEntity<Void> updateStoreType(@AuthenticationPrincipal UserDetails user, @RequestBody UpdateStoreRequest request) {
         storeService.updateStoreType(user.getUsername(), request);
         return ResponseEntity.noContent().build();
-    }
-
-    @Operation(summary = "가게 타입 조회", description = "가게의 타입을 조회합니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "가게 타입 조회 성공", content = @Content(schema = @Schema(implementation = List.class))),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
-            @ApiResponse(responseCode = "500", description = "서버 오류")
-    })
-    @GetMapping("/storeType")
-    public ResponseEntity<List<StoreType>> getStoreTypes() {
-        return ResponseEntity.ok(storeService.getStoreType());
     }
 
     @Operation(summary = "가게 삭제", description = "가게를 삭제합니다.")

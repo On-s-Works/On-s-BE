@@ -4,7 +4,6 @@ import com.ons.back.commons.exception.ApplicationException;
 import com.ons.back.commons.exception.payload.ErrorStatus;
 import com.ons.back.persistence.domain.Store;
 import com.ons.back.persistence.domain.User;
-import com.ons.back.persistence.domain.type.StoreType;
 import com.ons.back.persistence.repository.StoreRepository;
 import com.ons.back.persistence.repository.UserRepository;
 import com.ons.back.presentation.dto.request.CreateStoreRequest;
@@ -16,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -57,10 +55,6 @@ public class StoreService {
                         ));
 
         storeRepository.save(request.toEntity(user, imageUrl));
-    }
-
-    public List<StoreType> getStoreType() {
-        return Arrays.stream(StoreType.values()).toList();
     }
 
     public void updateStoreName(String userKey, UpdateStoreRequest request) {

@@ -33,6 +33,12 @@ public class Store {
     @Column(name = "address_detail")
     private String addressDetail;
 
+    @Column(name = "store_image")
+    private String storeImage;
+
+    @Column(name = "store_number")
+    private String storeNumber;
+
     @Column(name = "is_active")
     boolean isActive = true;
 
@@ -69,12 +75,14 @@ public class Store {
     }
 
     @Builder
-    public Store(Long storeId, StoreType storeType, String storeName, String baseAddress, String addressDetail, boolean isActive, boolean isSale, boolean isManage, User user) {
+    public Store(Long storeId, StoreType storeType, String storeName, String baseAddress, String addressDetail, String storeImage, String storeNumber, boolean isActive, boolean isSale, boolean isManage, User user) {
         this.storeId = storeId;
         this.storeType = storeType;
         this.storeName = storeName;
         this.baseAddress = baseAddress;
         this.addressDetail = addressDetail;
+        this.storeImage = storeImage;
+        this.storeNumber = storeNumber;
         this.isActive = isActive;
         this.isSale = isSale;
         this.isManage = isManage;

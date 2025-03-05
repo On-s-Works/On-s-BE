@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -58,8 +59,8 @@ public class StoreController {
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     @PostMapping
-    public ResponseEntity<Void> createStore(@AuthenticationPrincipal UserDetails user, @RequestBody CreateStoreRequest request) {
-        storeService.createStore(user.getUsername(), request);
+    public ResponseEntity<Void> createStore(@AuthenticationPrincipal UserDetails user, @RequestBody CreateStoreRequest request, @RequestParam(required = false) MultipartFile file) {
+        storeService.createStore(user.getUsername(), request, file);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

@@ -69,8 +69,24 @@ public class Store {
         this.storeType = storeType;
     }
 
+    public void updateNumber(String storeNumber) {
+        this.storeNumber = storeNumber;
+    }
+
+    public void updateIsManage(Boolean isManage) {
+        this.isManage = isManage;
+    }
+
+    public void updateIsSale(Boolean isSale) {
+        this.isSale = isSale;
+    }
+
     public void delete() {
         this.isActive = false;
+    }
+
+    public void updateImage(String imageUrl) {
+        this.storeImage = imageUrl;
     }
 
     @Builder

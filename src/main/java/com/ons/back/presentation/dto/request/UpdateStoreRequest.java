@@ -5,6 +5,9 @@ public record UpdateStoreRequest(
         String storeName,
         String baseAddress,
         String addressDetail,
+        String storeNumber,
+        Boolean isManage,
+        Boolean isSale,
         String storeType
 ) {
 }

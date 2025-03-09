@@ -69,33 +69,9 @@ public class StoreController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    @PutMapping("/storeName")
-    public ResponseEntity<Void> updateStoreName(@AuthenticationPrincipal UserDetails user, @RequestBody UpdateStoreRequest request) {
-        storeService.updateStoreName(user.getUsername(), request);
-        return ResponseEntity.noContent().build();
-    }
-
-    @Operation(summary = "가게 이름 수정", description = "가게의 이름을 수정합니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "가게 이름 수정 성공"),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
-            @ApiResponse(responseCode = "500", description = "서버 오류")
-    })
-    @PutMapping("/storeAddress")
-    public ResponseEntity<Void> updateStoreAddress(@AuthenticationPrincipal UserDetails user, @RequestBody UpdateStoreRequest request) {
-        storeService.updateStoreAddress(user.getUsername(), request);
-        return ResponseEntity.noContent().build();
-    }
-
-    @Operation(summary = "가게 타입 수정", description = "가게의 타입을 수정합니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "가게 타입 수정 성공"),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
-            @ApiResponse(responseCode = "500", description = "서버 오류")
-    })
-    @PutMapping("/storeType")
-    public ResponseEntity<Void> updateStoreType(@AuthenticationPrincipal UserDetails user, @RequestBody UpdateStoreRequest request) {
-        storeService.updateStoreType(user.getUsername(), request);
+    @PutMapping
+    public ResponseEntity<Void> updateStoreName(@AuthenticationPrincipal UserDetails user, @RequestBody UpdateStoreRequest request, @RequestParam(required = false) MultipartFile file) {
+        storeService.updateStore(user.getUsername(), request);
         return ResponseEntity.noContent().build();
     }
 

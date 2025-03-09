@@ -47,29 +47,49 @@ public class StoreService {
 
     public void createStore(String userKey, CreateStoreRequest request, MultipartFile file) {
 
-        String imageUrl = storageService.uploadFirebaseBucket(file, "ons" + file.getOriginalFilename());
-
         User user = userRepository.findByUserKey(userKey)
-                        .orElseThrow(() -> new ApplicationException(
-                                ErrorStatus.toErrorStatus("해당하는 유저가 없습니다.", 404, LocalDateTime.now())
-                        ));
+                .orElseThrow(() -> new ApplicationException(
+                        ErrorStatus.toErrorStatus("해당하는 유저가 없습니다.", 404, LocalDateTime.now())
+                ));
+
+        String imageUrl = storageService.uploadFirebaseBucket(file, "ons" + file.getOriginalFilename());
 
         storeRepository.save(request.toEntity(user, imageUrl));
     }
 
-    public void updateStoreName(String userKey, UpdateStoreRequest request) {
+    public void updateStoreImage(String userKey, Long storeId, MultipartFile file) {
+        Store store = validateStoreOwner(userKey, storeId);
+        storageService.deleteFirebaseBucket(store.getStoreImage());
+        store.updateImage(storageService.uploadFirebaseBucket(file, "ons" + file.getOriginalFilename()));
+    }
+
+    public void updateStore(String userKey, UpdateStoreRequest request) {
         Store store = validateStoreOwner(userKey, request.storeId());
-        store.updateName(request.storeName());
+
+        if(request.storeName() != null) {
+            store.updateName(request.storeName());
+        }
+
+        if(request.storeNumber() != null) {
+            store.updateNumber(request.storeNumber());
+        }
+
+        if(request.isManage() != store.isManage()) {
+            store.updateIsManage(request.isManage());
+        }
+
+        if(request.isSale() != store.isSale()) {
+            store.updateIsSale(request.isSale());
+        }
+
+        if(request.storeType() != null) {
+            store.updateStoreType(request.storeType());
+        }
     }
 
     public void updateStoreAddress(String userKey, UpdateStoreRequest request) {
         Store store = validateStoreOwner(userKey, request.storeId());
         store.updateAddress(request.baseAddress(), request.addressDetail());
-    }
-
-    public void updateStoreType(String userKey, UpdateStoreRequest request) {
-        Store store = validateStoreOwner(userKey, request.storeId());
-        store.updateStoreType(request.storeType());
     }
 
     public void deleteStore(String userKey, Long storeId) {

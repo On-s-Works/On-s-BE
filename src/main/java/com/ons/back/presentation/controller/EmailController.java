@@ -5,7 +5,6 @@ import com.ons.back.commons.exception.ValidationFailedException;
 import com.ons.back.presentation.dto.request.EmailAuthRequest;
 import com.ons.back.presentation.dto.request.SendEmailRequest;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;

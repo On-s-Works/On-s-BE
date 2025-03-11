@@ -85,11 +85,10 @@ public class StoreService {
         if(request.storeType() != null) {
             store.updateStoreType(request.storeType());
         }
-    }
 
-    public void updateStoreAddress(String userKey, UpdateStoreRequest request) {
-        Store store = validateStoreOwner(userKey, request.storeId());
-        store.updateAddress(request.baseAddress(), request.addressDetail());
+        if(request.baseAddress() != null && request.addressDetail() != null) {
+            store.updateAddress(request.baseAddress(), request.addressDetail());
+        }
     }
 
     public void deleteStore(String userKey, Long storeId) {

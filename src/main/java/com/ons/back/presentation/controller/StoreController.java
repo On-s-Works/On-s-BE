@@ -63,7 +63,7 @@ public class StoreController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @Operation(summary = "가게 이름 수정", description = "가게의 이름을 수정합니다.")
+    @Operation(summary = "가게 수정", description = "가게의 정보를 수정합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "가게 이름 수정 성공"),
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
@@ -72,6 +72,18 @@ public class StoreController {
     @PutMapping
     public ResponseEntity<Void> updateStoreName(@AuthenticationPrincipal UserDetails user, @RequestBody UpdateStoreRequest request, @RequestParam(required = false) MultipartFile file) {
         storeService.updateStore(user.getUsername(), request);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "가게 이미지 수정", description = "가게의 이미지를 수정합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "가게 이름 수정 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    @PutMapping
+    public ResponseEntity<Void> updateStoreName(@AuthenticationPrincipal UserDetails user, @RequestParam Long storeId ,@RequestParam MultipartFile file) {
+        storeService.updateStoreImage(user.getUsername(), storeId ,file);
         return ResponseEntity.noContent().build();
     }
 

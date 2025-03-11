@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,7 +33,7 @@ public class StoreUserController {
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     @GetMapping
-    public ResponseEntity<ReadStoreUserAnalyticsResponse> analytics(@AuthenticationPrincipal UserDetails user, @RequestParam Long storeId) {
-        return ResponseEntity.ok(storeUserService.analytics(user.getUsername(), storeId));
+    public ResponseEntity<ReadStoreUserAnalyticsResponse> analytics(@AuthenticationPrincipal UserDetails user, @RequestParam Long storeId, Pageable pageable) {
+        return ResponseEntity.ok(storeUserService.analytics(user.getUsername(), storeId, pageable));
     }
 }

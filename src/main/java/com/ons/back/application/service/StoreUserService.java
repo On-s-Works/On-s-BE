@@ -11,6 +11,9 @@ import com.ons.back.persistence.repository.UserRepository;
 import com.ons.back.presentation.dto.response.ReadStoreUserAnalyticsResponse;
 import com.ons.back.presentation.dto.response.ReadStoreUserResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +31,7 @@ public class StoreUserService {
     private final StoreRepository storeRepository;
     private final UserRepository userRepository;
 
-    public ReadStoreUserAnalyticsResponse analytics(String userKey, Long storeId) {
+    public ReadStoreUserAnalyticsResponse analytics(String userKey, Long storeId, Pageable pageable) {
 
         LocalDateTime now = LocalDateTime.now();
 
@@ -49,6 +52,12 @@ public class StoreUserService {
         }
 
         List<ReadStoreUserResponse> storeUserResponseList = storeUserRepository.findByStore(store).stream().map(ReadStoreUserResponse::fromEntity).toList();
+
+        int start = (int) pageable.getOffset();
+        int end = Math.min(start + pageable.getPageSize(), storeUserResponseList.size());
+
+        List<ReadStoreUserResponse> subList = storeUserResponseList.subList(start, end);
+        Page<ReadStoreUserResponse> page = new PageImpl<>(subList, pageable, storeUserResponseList.size());
 
         long size = storeUserResponseList.size();
 
@@ -90,7 +99,7 @@ public class StoreUserService {
 
         return ReadStoreUserAnalyticsResponse.builder()
                 .totalCount(size)
-                .storeUserList(storeUserResponseList)
+                .storeUserPage(page)
                 .todayRegisterCount(todayRegisterStoreUser)
                 .todayIncreaseRate(yesterdayRegisterStoreUser == 0 ? 100.0 : (double)todayRegisterStoreUser / yesterdayRegisterStoreUser)
                 .weekRegisterCount(thisWeekRegisterStoreUser)

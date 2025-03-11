@@ -63,7 +63,7 @@ public class StoreService {
         store.updateImage(storageService.uploadFirebaseBucket(file, "ons" + file.getOriginalFilename()));
     }
 
-    public void updateStore(String userKey, UpdateStoreRequest request) {
+    public void updateStore(String userKey, UpdateStoreRequest request, MultipartFile file) {
         Store store = validateStoreOwner(userKey, request.storeId());
 
         if(request.storeName() != null) {
@@ -88,6 +88,11 @@ public class StoreService {
 
         if(request.baseAddress() != null && request.addressDetail() != null) {
             store.updateAddress(request.baseAddress(), request.addressDetail());
+        }
+
+        if(!file.isEmpty()) {
+            storageService.deleteFirebaseBucket(store.getStoreImage());
+            store.updateImage(storageService.uploadFirebaseBucket(file, "ons" + file.getOriginalFilename()));
         }
     }
 

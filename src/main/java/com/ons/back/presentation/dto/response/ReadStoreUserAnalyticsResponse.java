@@ -1,12 +1,11 @@
 package com.ons.back.presentation.dto.response;
 
 import lombok.Builder;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 @Builder
 public record ReadStoreUserAnalyticsResponse(
-        List<ReadStoreUserResponse> storeUserList,
+        Page<ReadStoreUserResponse> storeUserPage,
         long totalCount,
         long todayRegisterCount,
         double todayIncreaseRate,

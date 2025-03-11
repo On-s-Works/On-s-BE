@@ -19,7 +19,6 @@ public class Store {
     @Column(name = "store_id")
     private Long storeId;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "store_type")
     private String storeType;
 

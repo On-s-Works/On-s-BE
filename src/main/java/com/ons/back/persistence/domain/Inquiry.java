@@ -1,6 +1,5 @@
 package com.ons.back.persistence.domain;
 
-import com.ons.back.persistence.domain.type.StoreType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -28,7 +27,7 @@ public class Inquiry {
     private String name;
 
     @Column(name = "store_type")
-    private StoreType storeType;
+    private String storeType;
 
     @Column(name = "inquiry_content", columnDefinition = "TEXT")
     private String content;
@@ -52,7 +51,7 @@ public class Inquiry {
     }
 
     @Builder
-    public Inquiry(Long id, String phoneNumber, String email, String name, StoreType storeType, String content, String answer, Boolean isAnswered, Boolean agreePrivacy) {
+    public Inquiry(Long id, String phoneNumber, String email, String name, String storeType, String content, String answer, Boolean isAnswered, Boolean agreePrivacy) {
         this.id = id;
         this.phoneNumber = phoneNumber;
         this.email = email;

@@ -36,7 +36,7 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
-    @Operation(summary = "로그아웃", description = "엑세스토큰을 제거합니다")
+    @Operation(summary = "로그아웃", description = "엑세스 토큰을 제거합니다")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그아웃 성공"),
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),

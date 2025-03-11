@@ -21,7 +21,6 @@ public class StorageService {
     @Value("${firebase.storage-url}")
     private String firebaseStorageUrl;
 
-    // 파일 업로드
     public String uploadFirebaseBucket(MultipartFile multipartFile, String fileName){
 
         Bucket bucket = StorageClient.getInstance().bucket(firebaseStorageUrl);
@@ -45,8 +44,8 @@ public class StorageService {
                 URLEncoder.encode(fileName, StandardCharsets.UTF_8));
     }
 
-    // 파일 삭제
     public void deleteFirebaseBucket(String key) {
+
         Bucket bucket = StorageClient.getInstance().bucket(firebaseStorageUrl);
 
         bucket.get(key).delete();

@@ -4,7 +4,6 @@ import com.ons.back.commons.exception.ApplicationException;
 import com.ons.back.commons.exception.payload.ErrorStatus;
 import com.ons.back.persistence.domain.Store;
 import com.ons.back.persistence.domain.User;
-import com.ons.back.persistence.domain.type.StoreType;
 import com.ons.back.persistence.repository.StoreRepository;
 import com.ons.back.persistence.repository.UserRepository;
 import com.ons.back.presentation.dto.request.CreateStoreRequest;
@@ -16,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -49,33 +47,53 @@ public class StoreService {
 
     public void createStore(String userKey, CreateStoreRequest request, MultipartFile file) {
 
-        String imageUrl = storageService.uploadFirebaseBucket(file, "ons" + file.getOriginalFilename());
-
         User user = userRepository.findByUserKey(userKey)
-                        .orElseThrow(() -> new ApplicationException(
-                                ErrorStatus.toErrorStatus("해당하는 유저가 없습니다.", 404, LocalDateTime.now())
-                        ));
+                .orElseThrow(() -> new ApplicationException(
+                        ErrorStatus.toErrorStatus("해당하는 유저가 없습니다.", 404, LocalDateTime.now())
+                ));
+
+        String imageUrl = storageService.uploadFirebaseBucket(file, "ons" + file.getOriginalFilename());
 
         storeRepository.save(request.toEntity(user, imageUrl));
     }
 
-    public List<StoreType> getStoreType() {
-        return Arrays.stream(StoreType.values()).toList();
+    public void updateStoreImage(String userKey, Long storeId, MultipartFile file) {
+        Store store = validateStoreOwner(userKey, storeId);
+        storageService.deleteFirebaseBucket(store.getStoreImage());
+        store.updateImage(storageService.uploadFirebaseBucket(file, "ons" + file.getOriginalFilename()));
     }
 
-    public void updateStoreName(String userKey, UpdateStoreRequest request) {
+    public void updateStore(String userKey, UpdateStoreRequest request, MultipartFile file) {
         Store store = validateStoreOwner(userKey, request.storeId());
-        store.updateName(request.storeName());
-    }
 
-    public void updateStoreAddress(String userKey, UpdateStoreRequest request) {
-        Store store = validateStoreOwner(userKey, request.storeId());
-        store.updateAddress(request.baseAddress(), request.addressDetail());
-    }
+        if(request.storeName() != null) {
+            store.updateName(request.storeName());
+        }
 
-    public void updateStoreType(String userKey, UpdateStoreRequest request) {
-        Store store = validateStoreOwner(userKey, request.storeId());
-        store.updateStoreType(request.storeType());
+        if(request.storeNumber() != null) {
+            store.updateNumber(request.storeNumber());
+        }
+
+        if(request.isManage() != store.isManage()) {
+            store.updateIsManage(request.isManage());
+        }
+
+        if(request.isSale() != store.isSale()) {
+            store.updateIsSale(request.isSale());
+        }
+
+        if(request.storeType() != null) {
+            store.updateStoreType(request.storeType());
+        }
+
+        if(request.baseAddress() != null && request.addressDetail() != null) {
+            store.updateAddress(request.baseAddress(), request.addressDetail());
+        }
+
+        if(!file.isEmpty()) {
+            storageService.deleteFirebaseBucket(store.getStoreImage());
+            store.updateImage(storageService.uploadFirebaseBucket(file, "ons" + file.getOriginalFilename()));
+        }
     }
 
     public void deleteStore(String userKey, Long storeId) {

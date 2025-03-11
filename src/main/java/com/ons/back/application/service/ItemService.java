@@ -38,7 +38,6 @@ public class ItemService {
         itemRepository.save(request.toEntity(store));
     }
 
-    //뭐 변경할 수 있을지
     public void updateItem(Long userId, UpdateItemRequest request) {
 
          Item item = itemRepository.findById(request.itemId())

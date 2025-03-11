@@ -1,6 +1,5 @@
 package com.ons.back.persistence.domain;
 
-import com.ons.back.persistence.domain.type.StoreType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -20,9 +19,8 @@ public class Store {
     @Column(name = "store_id")
     private Long storeId;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "store_type")
-    private StoreType storeType;
+    private String storeType;
 
     @Column(name = "store_name")
     private String storeName;
@@ -66,16 +64,32 @@ public class Store {
         this.addressDetail = addressDetail;
     }
 
-    public void updateStoreType(StoreType storeType) {
+    public void updateStoreType(String storeType) {
         this.storeType = storeType;
+    }
+
+    public void updateNumber(String storeNumber) {
+        this.storeNumber = storeNumber;
+    }
+
+    public void updateIsManage(Boolean isManage) {
+        this.isManage = isManage;
+    }
+
+    public void updateIsSale(Boolean isSale) {
+        this.isSale = isSale;
     }
 
     public void delete() {
         this.isActive = false;
     }
 
+    public void updateImage(String imageUrl) {
+        this.storeImage = imageUrl;
+    }
+
     @Builder
-    public Store(Long storeId, StoreType storeType, String storeName, String baseAddress, String addressDetail, String storeImage, String storeNumber, boolean isActive, boolean isSale, boolean isManage, User user) {
+    public Store(Long storeId, String storeType, String storeName, String baseAddress, String addressDetail, String storeImage, String storeNumber, boolean isActive, boolean isSale, boolean isManage, User user) {
         this.storeId = storeId;
         this.storeType = storeType;
         this.storeName = storeName;

@@ -161,14 +161,12 @@ public class StoreService {
         SaleReportResponse yesterdaySaleReport = toSaleReportResponse(yesterdayOrderList, yesterdayTotalAmount, todayTotalAmount);
         SaleReportResponse lastWeekSaleReport = toSaleReportResponse(lastWeekOrderList, lastWeekTotalAmount, todayTotalAmount);
         SaleReportResponse lastMonthSaleReport = toSaleReportResponse(lastMonthOrderList, lastMonthTotalAmount, todayTotalAmount);
-        List<ReadOrderResponse> todayOrderResponseList = todayOrderList.stream().map(ReadOrderResponse::fromEntity).toList();
 
         return ReadSaleReportResponse.builder()
                 .todaySaleReport(todaySaleReport)
                 .yesterdaySaleReport(yesterdaySaleReport)
                 .lastWeekSaleReport(lastWeekSaleReport)
                 .lastMonthSaleReport(lastMonthSaleReport)
-                .todayOrderResponseList(todayOrderResponseList)
                 .build();
     }
 

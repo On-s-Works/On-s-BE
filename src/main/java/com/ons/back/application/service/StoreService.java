@@ -2,19 +2,27 @@ package com.ons.back.application.service;
 
 import com.ons.back.commons.exception.ApplicationException;
 import com.ons.back.commons.exception.payload.ErrorStatus;
+import com.ons.back.persistence.domain.Order;
+import com.ons.back.persistence.domain.PosDevice;
 import com.ons.back.persistence.domain.Store;
 import com.ons.back.persistence.domain.User;
+import com.ons.back.persistence.repository.OrderRepository;
+import com.ons.back.persistence.repository.PosDeviceRepository;
 import com.ons.back.persistence.repository.StoreRepository;
 import com.ons.back.persistence.repository.UserRepository;
 import com.ons.back.presentation.dto.request.CreateStoreRequest;
 import com.ons.back.presentation.dto.request.UpdateStoreRequest;
+import com.ons.back.presentation.dto.response.ReadOrderResponse;
+import com.ons.back.presentation.dto.response.ReadSaleReportResponse;
 import com.ons.back.presentation.dto.response.ReadStoreResponse;
+import com.ons.back.presentation.dto.response.SaleReportResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -25,6 +33,8 @@ public class StoreService {
     private final StoreRepository storeRepository;
     private final UserRepository userRepository;
     private final StorageService storageService;
+    private final PosDeviceRepository posDeviceRepository;
+    private final OrderRepository orderRepository;
 
     @Transactional(readOnly = true)
     public List<ReadStoreResponse> getStoreByUserId(String userKey) {
@@ -99,6 +109,73 @@ public class StoreService {
     public void deleteStore(String userKey, Long storeId) {
         Store store = validateStoreOwner(userKey, storeId);
         store.delete();
+    }
+
+    public ReadSaleReportResponse getSalesReport(String userKey, Long storeId) {
+
+        Store store = validateStoreOwner(userKey, storeId);
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime todayStart = now.toLocalDate().atStartOfDay();
+        LocalDateTime todayEnd = todayStart.plusDays(1);
+        LocalDateTime yesterdayStart = todayStart.minusDays(1);
+        LocalDateTime lastWeekStart = todayStart.minusDays(7);
+        LocalDateTime lastMonthStart = todayStart.minusMonths(1);
+
+        List<PosDevice> posDeviceList = posDeviceRepository.findByStore(store);
+
+        List<Order> todayOrderList = new ArrayList<>();
+        List<Order> yesterdayOrderList = new ArrayList<>();
+        List<Order> lastWeekOrderList = new ArrayList<>();
+        List<Order> lastMonthOrderList = new ArrayList<>();
+
+        for(PosDevice posDevice : posDeviceList) {
+            todayOrderList.addAll(orderRepository.findByPosDeviceAndCreatedAtBetween(posDevice, todayStart, todayEnd));
+            yesterdayOrderList.addAll(orderRepository.findByPosDeviceAndCreatedAtBetween(posDevice, yesterdayStart, todayStart));
+            lastWeekOrderList.addAll(orderRepository.findByPosDeviceAndCreatedAtBetween(posDevice, lastWeekStart, todayStart));
+            lastMonthOrderList.addAll(orderRepository.findByPosDeviceAndCreatedAtBetween(posDevice, lastMonthStart, todayStart));
+        }
+
+        Double todayTotalAmount = 0d;
+        Double yesterdayTotalAmount = 0d;
+        Double lastWeekTotalAmount = 0d;
+        Double lastMonthTotalAmount = 0d;
+
+        for(Order order : todayOrderList) {
+            todayTotalAmount += order.getTotalAmount();
+        }
+
+        for(Order order : yesterdayOrderList) {
+            yesterdayTotalAmount += order.getTotalAmount();
+        }
+
+        for(Order order : lastWeekOrderList) {
+            lastWeekTotalAmount += order.getTotalAmount();
+        }
+
+        for(Order order : lastMonthOrderList) {
+            lastMonthTotalAmount += order.getTotalAmount();
+        }
+
+        SaleReportResponse todaySaleReport = toSaleReportResponse(todayOrderList, todayTotalAmount, yesterdayTotalAmount);
+        SaleReportResponse yesterdaySaleReport = toSaleReportResponse(yesterdayOrderList, yesterdayTotalAmount, todayTotalAmount);
+        SaleReportResponse lastWeekSaleReport = toSaleReportResponse(lastWeekOrderList, lastWeekTotalAmount, todayTotalAmount);
+        SaleReportResponse lastMonthSaleReport = toSaleReportResponse(lastMonthOrderList, lastMonthTotalAmount, todayTotalAmount);
+
+        return ReadSaleReportResponse.builder()
+                .todaySaleReport(todaySaleReport)
+                .yesterdaySaleReport(yesterdaySaleReport)
+                .lastWeekSaleReport(lastWeekSaleReport)
+                .lastMonthSaleReport(lastMonthSaleReport)
+                .build();
+    }
+
+    private static SaleReportResponse toSaleReportResponse(List<Order> orderList, Double firstTotalAmount, Double secondTotalAmount) {
+        return SaleReportResponse.builder()
+                .saleCount(orderList.size())
+                .sumOfTotalAmount(firstTotalAmount)
+                .increasePercent(secondTotalAmount != 0 ? (firstTotalAmount - secondTotalAmount) / secondTotalAmount * 100 : 100)
+                .build();
     }
 
     private Store validateStoreOwner(String userKey, Long storeId) {

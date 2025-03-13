@@ -4,6 +4,7 @@ import com.ons.back.application.service.StoreService;
 import com.ons.back.commons.dto.PrincipalDetails;
 import com.ons.back.presentation.dto.request.CreateStoreRequest;
 import com.ons.back.presentation.dto.request.UpdateStoreRequest;
+import com.ons.back.presentation.dto.response.ReadSaleReportResponse;
 import com.ons.back.presentation.dto.response.ReadStoreResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -18,6 +19,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import retrofit2.http.Path;
 
 import java.util.List;
 
@@ -82,8 +84,19 @@ public class StoreController {
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     @DeleteMapping("/{storeId}")
-    public ResponseEntity<Void> deleteStore(@AuthenticationPrincipal PrincipalDetails principal, @PathVariable Long storeId) {
-        storeService.deleteStore(principal.getUsername(), storeId);
+    public ResponseEntity<Void> deleteStore(@AuthenticationPrincipal UserDetails user, @PathVariable Long storeId) {
+        storeService.deleteStore(user.getUsername(), storeId);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "가게의 매출현황을 가져옵니다.", description = "가게의 매출 현황을 가져옵니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "가게 매출 현황 조회 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    @GetMapping("/salesReport/{storeId}")
+    public ResponseEntity<ReadSaleReportResponse> getSalesReport(@AuthenticationPrincipal UserDetails user, @PathVariable Long storeId) {
+        return ResponseEntity.ok(storeService.getSalesReport(user.getUsername(), storeId));
     }
 }

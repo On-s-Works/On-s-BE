@@ -1,5 +1,6 @@
 package com.ons.back.application.service;
 
+import com.google.api.client.util.DateTime;
 import com.ons.back.commons.exception.ApplicationException;
 import com.ons.back.commons.exception.payload.ErrorStatus;
 import com.ons.back.persistence.domain.Order;
@@ -12,10 +13,7 @@ import com.ons.back.persistence.repository.StoreRepository;
 import com.ons.back.persistence.repository.UserRepository;
 import com.ons.back.presentation.dto.request.CreateStoreRequest;
 import com.ons.back.presentation.dto.request.UpdateStoreRequest;
-import com.ons.back.presentation.dto.response.ReadOrderResponse;
-import com.ons.back.presentation.dto.response.ReadSaleReportResponse;
-import com.ons.back.presentation.dto.response.ReadStoreResponse;
-import com.ons.back.presentation.dto.response.SaleReportResponse;
+import com.ons.back.presentation.dto.response.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -167,6 +165,50 @@ public class StoreService {
                 .yesterdaySaleReport(yesterdaySaleReport)
                 .lastWeekSaleReport(lastWeekSaleReport)
                 .lastMonthSaleReport(lastMonthSaleReport)
+                .build();
+    }
+
+    public ReadSaleChangeResponse getSaleChange(String userKey, Long storeId) {
+
+        Store store = validateStoreOwner(userKey, storeId);
+
+        LocalDateTime now = LocalDateTime.now();
+        List<LocalDateTime> dates = new ArrayList<>();
+
+        for (int i = 7; i >= 0; i--) {
+            LocalDateTime firstDay = now.minusMonths(i)
+                    .withDayOfMonth(1)
+                    .withHour(0)
+                    .withMinute(0)
+                    .withSecond(0)
+                    .withNano(0);
+            dates.add(firstDay);
+        }
+
+        List<PosDevice> posDeviceList = posDeviceRepository.findByStore(store);
+        List<Double> monthSaleAmounts = new ArrayList<>();
+
+        for(int i = 0; i < 6; i++) {
+            double tempTotal = 0d;
+            for (PosDevice posDevice : posDeviceList) {
+                tempTotal += orderRepository.findByPosDeviceAndCreatedAtBetween(posDevice, dates.get(i), dates.get(i + 1))
+                        .stream().map(Order::getTotalAmount)
+                        .reduce(0d, Double::sum);
+            }
+            monthSaleAmounts.add(tempTotal);
+        }
+
+        Double total = monthSaleAmounts.stream().mapToDouble(Double::doubleValue).sum();
+
+        return ReadSaleChangeResponse.builder()
+                .firstMonthSaleAmount(monthSaleAmounts.get(0))
+                .secondMonthSaleAmount(monthSaleAmounts.get(1))
+                .thirdMonthSaleAmount(monthSaleAmounts.get(2))
+                .forthMonthSaleAmount(monthSaleAmounts.get(3))
+                .fifthMonthSaleAmount(monthSaleAmounts.get(4))
+                .sixthMonthSaleAmount(monthSaleAmounts.get(5))
+                .totalAmount(total)
+                .avg(total/6)
                 .build();
     }
 

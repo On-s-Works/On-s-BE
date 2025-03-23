@@ -17,4 +17,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     @EntityGraph(value = "Order.withOrderItems")
     List<Order> findByPosDeviceAndCreatedAtBetween(PosDevice posDevices, LocalDateTime start, LocalDateTime end);
+
+    Optional<Order> findByNumber(Long number);
 }

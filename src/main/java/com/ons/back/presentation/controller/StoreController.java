@@ -106,7 +106,7 @@ public class StoreController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    @GetMapping("/salesReport/{storeId}")
+    @GetMapping("/saleChange/{storeId}")
     public ResponseEntity<ReadSaleChangeResponse> getSalesChange(@AuthenticationPrincipal UserDetails user, @PathVariable Long storeId) {
         return ResponseEntity.ok(storeService.getSaleChange(user.getUsername(), storeId));
     }

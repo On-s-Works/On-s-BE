@@ -42,9 +42,20 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    @PostMapping("logout")
+    @PostMapping("/logout")
     public ResponseEntity<Void> logout(@RequestHeader("Authorization") String accessToken, HttpServletResponse response) {
         authService.logout(accessToken, response);
         return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "uid 중복 확인", description = "true시 중복 x / false시 중복 o")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "uid 중복확인 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    @GetMapping("/check")
+    public ResponseEntity<Boolean> checkDuplicatedUid(@RequestParam String uid) {
+        return ResponseEntity.ok(authService.checkDuplicatedUid(uid));
     }
 }

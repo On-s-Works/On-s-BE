@@ -103,6 +103,7 @@ public class SecurityConfig {
                                         new AntPathRequestMatcher("/error"),
                                         new AntPathRequestMatcher("/"),
                                         new AntPathRequestMatcher("/auth/signup"),
+                                        new AntPathRequestMatcher("/auth/check"),
                                         new AntPathRequestMatcher("/oauth2/**"),
                                         new AntPathRequestMatcher("/login/**"),
                                         new AntPathRequestMatcher("/logout/**"),

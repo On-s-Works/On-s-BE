@@ -43,4 +43,8 @@ public class AuthService {
         response.addCookie(cookie);
         response.setHeader("Authorization", "");
     }
+
+    public boolean checkDuplicatedUid(String uid) {
+        return !userRepository.existsByUid(uid);
+    }
 }

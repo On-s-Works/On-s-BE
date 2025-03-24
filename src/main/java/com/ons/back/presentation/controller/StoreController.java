@@ -1,7 +1,6 @@
 package com.ons.back.presentation.controller;
 
 import com.ons.back.application.service.StoreService;
-import com.ons.back.commons.dto.PrincipalDetails;
 import com.ons.back.presentation.dto.request.CreateStoreRequest;
 import com.ons.back.presentation.dto.request.UpdateStoreRequest;
 import com.ons.back.presentation.dto.response.ReadSaleChangeResponse;

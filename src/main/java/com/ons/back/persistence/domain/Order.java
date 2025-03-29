@@ -1,6 +1,7 @@
 package com.ons.back.persistence.domain;
 
 import com.ons.back.persistence.domain.type.OrderStatusType;
+import com.ons.back.persistence.domain.type.PaymentType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -38,6 +39,10 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatusType orderStatus;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_type")
+    private PaymentType paymentType;
+
     @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -50,11 +55,13 @@ public class Order {
     private List<OrderItem> orderItemList = new ArrayList<>();
 
     @Builder
-    public Order(Long id, Double totalAmount, OrderStatusType orderStatus, LocalDateTime createdAt, PosDevice posDevice) {
+    public Order(Long id, Double totalAmount, OrderStatusType orderStatus, PaymentType paymentType, LocalDateTime createdAt, PosDevice posDevice, List<OrderItem> orderItemList) {
         this.id = id;
         this.totalAmount = totalAmount;
         this.orderStatus = orderStatus;
+        this.paymentType = paymentType;
         this.createdAt = createdAt;
         this.posDevice = posDevice;
+        this.orderItemList = orderItemList;
     }
 }

@@ -6,6 +6,8 @@ import com.ons.back.persistence.domain.Order;
 import com.ons.back.persistence.domain.PosDevice;
 import com.ons.back.persistence.domain.Store;
 import com.ons.back.persistence.domain.User;
+import com.ons.back.persistence.domain.type.OrderStatusType;
+import com.ons.back.persistence.domain.type.PaymentType;
 import com.ons.back.persistence.repository.OrderRepository;
 import com.ons.back.persistence.repository.PosDeviceRepository;
 import com.ons.back.persistence.repository.StoreRepository;
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -42,22 +45,42 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public List<ReadOrderResponse> getOrderList(String userKey, Long storeId) {
+    public List<ReadOrderResponse> getOrderList(
+            String userKey, Long storeId, LocalDateTime start, LocalDateTime end, String sortType, List<String> paymentStatusList, List<String> paymentTypeList) {
 
         Store store = validateStoreOwner(userKey, storeId);
-
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime todayStart = now.toLocalDate().atStartOfDay();
-        LocalDateTime todayEnd = todayStart.plusDays(1);
 
         List<Order> orderList = new ArrayList<>();
         List<PosDevice> posDeviceList = posDeviceRepository.findByStore(store);
 
-        for(PosDevice posDevice : posDeviceList) {
-            orderList.addAll(orderRepository.findByPosDeviceAndCreatedAtBetween(posDevice, todayStart, todayEnd));
+        if(paymentStatusList != null && paymentTypeList != null) {
+            for(PosDevice posDevice : posDeviceList) {
+                for(String paymentType : paymentTypeList) {
+                    orderList.addAll(orderRepository.findByPosDeviceAndCreatedAtBetweenAndPaymentType(posDevice,start.toLocalDate().atStartOfDay(), end.plusDays(1).toLocalDate().atStartOfDay(), PaymentType.valueOf(paymentType)));
+                }
+
+                for(String paymentStatus : paymentStatusList) {
+                    orderList.addAll(orderRepository.findByPosDeviceAndCreatedAtBetweenAndOrderStatus(posDevice,start.toLocalDate().atStartOfDay(), end.plusDays(1).toLocalDate().atStartOfDay(), OrderStatusType.valueOf(paymentStatus)));
+                }
+            }
+        } else {
+            for(PosDevice posDevice : posDeviceList) {
+                orderList.addAll(orderRepository.findByPosDeviceAndCreatedAtBetween(posDevice, start.toLocalDate().atStartOfDay(), end.plusDays(1).toLocalDate().atStartOfDay()));
+            }
         }
 
-        return orderList.stream().map(ReadOrderResponse::fromEntity).toList();
+        Comparator<Order> comparator = switch (sortType.toLowerCase()) {
+            case "id_asc" -> Comparator.comparing(Order::getId);
+            case "id_desc" -> Comparator.comparing(Order::getId).reversed();
+            case "created_at_asc", "oldest" -> Comparator.comparing(Order::getCreatedAt);
+            default -> Comparator.comparing(Order::getCreatedAt).reversed();
+        };
+
+        return orderList
+                .stream()
+                .sorted(comparator)
+                .map(ReadOrderResponse::fromEntity)
+                .toList();
     }
 
     private Store validateStoreOwner(String userKey, Long storeId) {

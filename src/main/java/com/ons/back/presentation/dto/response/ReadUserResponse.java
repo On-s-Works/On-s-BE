@@ -10,7 +10,6 @@ import java.time.LocalDate;
 public record ReadUserResponse(
         String uid,
         String username,
-        LocalDate birthday,
         String email,
         String phoneNumber,
         Boolean agreeTerms,
@@ -20,7 +19,6 @@ public record ReadUserResponse(
         return ReadUserResponse.builder()
                 .uid(user.getUid())
                 .username(user.getUsername())
-                .birthday(user.getBirthday())
                 .email(user.getEmail())
                 .phoneNumber(user.getPhoneNumber())
                 .agreeTerms(user.getAgreeTerms())

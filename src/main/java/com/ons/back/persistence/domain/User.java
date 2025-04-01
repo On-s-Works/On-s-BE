@@ -30,9 +30,6 @@ public class User {
     @Column(name = "username")
     private String username;
 
-    @Column(name = "birthday")
-    private LocalDate birthday;
-
     @Column(name = "email")
     private String email;
 
@@ -58,12 +55,11 @@ public class User {
     }
 
     @Builder
-    public User(Long userId, String uid, String password, String username, LocalDate birthday, String email, String phoneNumber, Boolean agreeTerms, String userKey, ProviderType providerType, Role role) {
+    public User(Long userId, String uid, String password, String username, String email, String phoneNumber, Boolean agreeTerms, String userKey, ProviderType providerType, Role role) {
         this.userId = userId;
         this.uid = uid;
         this.password = password;
         this.username = username;
-        this.birthday = birthday;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.agreeTerms = agreeTerms;

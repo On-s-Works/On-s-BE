@@ -12,7 +12,6 @@ public record SignUpRequest(
         String uid,
         String password,
         String username,
-        LocalDate birthday,
         String phoneNumber,
         String email,
         boolean agreeTerms
@@ -26,7 +25,6 @@ public record SignUpRequest(
                 .role(Role.USER)
                 .email(email)
                 .agreeTerms(agreeTerms)
-                .birthday(birthday)
                 .phoneNumber(phoneNumber)
                 .username(username)
                 .build();

@@ -4,6 +4,7 @@ import com.ons.back.commons.exception.ApplicationException;
 import com.ons.back.commons.exception.payload.ErrorStatus;
 import com.ons.back.persistence.domain.*;
 import com.ons.back.persistence.domain.type.OrderStatusType;
+import com.ons.back.persistence.domain.type.PaymentType;
 import com.ons.back.persistence.repository.*;
 import com.ons.back.presentation.dto.request.CreateItemRequest;
 import com.ons.back.presentation.dto.request.UpdateItemRequest;
@@ -14,6 +15,7 @@ import com.ons.back.presentation.dto.response.ReadSaledItemResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -27,12 +29,49 @@ public class ItemService {
     private final StoreRepository storeRepository;
     private final UserRepository userRepository;
     private final OrderRepository orderRepository;
+    private final StorageService storageService;
 
-    public List<ReadItemResponse> getItemsByStoreId(String userKey, Long storeId) {
+    public List<ReadItemResponse> getItemsByStoreId(String userKey, Long storeId, String sortType, Boolean isOrdered, Boolean saleStatus) {
 
         validUserStore(userKey, storeId);
 
-        return itemRepository.findByStore_StoreId(storeId).stream().map(ReadItemResponse::fromEntity).toList();
+        List<Item> itemList = new ArrayList<>();
+
+        if(saleStatus != null){
+            if(saleStatus) {
+                itemList.addAll(itemRepository.findByStore_StoreIdAndItemStockGreaterThan(storeId, 1));
+            } else {
+                itemList.addAll(itemRepository.findByStore_StoreIdAndItemStock(storeId, 0));
+            }
+        }
+
+        if(isOrdered != null) {
+            if(isOrdered) {
+                itemList.addAll(itemRepository.findByStore_StoreIdAndIsOrdered(storeId, true));
+            } else {
+                itemList.addAll(itemRepository.findByStore_StoreIdAndIsOrdered(storeId, false));
+            }
+        }
+
+        if(isOrdered == null && saleStatus == null) {
+            itemList.addAll(itemRepository.findByStore_StoreId(storeId));
+        }
+
+        Comparator<Item> comparator = switch (sortType.toLowerCase()) {
+            case "created_at_desc" -> Comparator.comparing(Item::getCreatedAt);
+            case "item_name_desc" -> Comparator.comparing(Item::getItemName);
+            case "item_name_asc" -> Comparator.comparing(Item::getItemName).reversed();
+            case "item_price_desc" -> Comparator.comparing(Item::getItemPurchasePrice);
+            case "item_price_asc" -> Comparator.comparing(Item::getItemPurchasePrice).reversed();
+            case "item_quantity_desc" -> Comparator.comparing(Item::getItemStock);
+            case "item_quantity_asc" -> Comparator.comparing(Item::getItemStock).reversed();
+            default -> Comparator.comparing(Item::getCreatedAt).reversed();
+        };
+
+        return itemList.stream()
+                .sorted(comparator)
+                .map(ReadItemResponse::fromEntity)
+                .toList();
     }
 
     public List<ReadSaledItemResponse> getSaledItem(LocalDateTime start, LocalDateTime end, Long storeId, String userKey) {
@@ -70,11 +109,17 @@ public class ItemService {
         return itemRepository.findTop4ByStoreOrderByItemStockAsc(store).stream().map(ReadLowStockItemResponse::fromEntity).toList();
     }
 
-    public void createItem(String userKey, CreateItemRequest request) {
+    public void createItem(String userKey, CreateItemRequest request, MultipartFile file) {
 
         Store store = validUserStore(userKey, request.storeId());
 
-        itemRepository.save(request.toEntity(store));
+        String itemImage = null;
+
+        if(file != null) {
+            itemImage = storageService.uploadFirebaseBucket(file, "item" + file.getName());
+        }
+
+        itemRepository.save(request.toEntity(store, itemImage));
     }
 
     public void updateItem(String userKey, UpdateItemRequest request) {

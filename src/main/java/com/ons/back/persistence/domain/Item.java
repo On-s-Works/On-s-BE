@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -41,6 +43,9 @@ public class Item {
     @Column(name = "is_active")
     private boolean isActive;
 
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
     @ManyToOne
     @JoinColumn(name = "store_id")
     private Store store;
@@ -58,7 +63,7 @@ public class Item {
     }
 
     @Builder
-    public Item(Long id, String itemName, Double itemPrice, Integer itemStock, String barcode, String itemImage, Double itemPurchasePrice, Boolean isOrdered, boolean isActive, Store store) {
+    public Item(Long id, String itemName, Double itemPrice, Integer itemStock, String barcode, String itemImage, Double itemPurchasePrice, Boolean isOrdered, boolean isActive, LocalDateTime createdAt, Store store) {
         this.id = id;
         this.itemName = itemName;
         this.itemPrice = itemPrice;
@@ -68,6 +73,7 @@ public class Item {
         this.itemPurchasePrice = itemPurchasePrice;
         this.isOrdered = isOrdered;
         this.isActive = isActive;
+        this.createdAt = createdAt;
         this.store = store;
     }
 }

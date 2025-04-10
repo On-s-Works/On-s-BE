@@ -2,19 +2,21 @@ package com.ons.back.application.service;
 
 import com.ons.back.commons.exception.ApplicationException;
 import com.ons.back.commons.exception.payload.ErrorStatus;
-import com.ons.back.persistence.domain.Item;
-import com.ons.back.persistence.domain.Store;
-import com.ons.back.persistence.repository.ItemRepository;
-import com.ons.back.persistence.repository.StoreRepository;
+import com.ons.back.persistence.domain.*;
+import com.ons.back.persistence.domain.type.OrderStatusType;
+import com.ons.back.persistence.repository.*;
 import com.ons.back.presentation.dto.request.CreateItemRequest;
 import com.ons.back.presentation.dto.request.UpdateItemRequest;
 import com.ons.back.presentation.dto.response.ReadItemResponse;
+import com.ons.back.presentation.dto.response.ReadLowStockItemResponse;
+import com.ons.back.presentation.dto.response.ReadOrderItemResponse;
+import com.ons.back.presentation.dto.response.ReadSaledItemResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -23,64 +25,119 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
     private final StoreRepository storeRepository;
+    private final UserRepository userRepository;
+    private final PosDeviceRepository posDeviceRepository;
+    private final OrderRepository orderRepository;
 
-    public List<ReadItemResponse> getItemsByStoreId(Long userId, Long storeId) {
+    public List<ReadItemResponse> getItemsByStoreId(String userKey, Long storeId) {
 
-        validUserStore(userId, storeId);
+        validUserStore(userKey, storeId);
 
         return itemRepository.findByStore_StoreId(storeId).stream().map(ReadItemResponse::fromEntity).toList();
     }
 
-    public void createItem(Long userId, CreateItemRequest request) {
+    public List<ReadSaledItemResponse> getSaledItem(LocalDateTime start, LocalDateTime end, Long storeId, String userKey) {
 
-        Store store = validUserStore(userId, request.storeId());
+        Store store = validUserStore(userKey, storeId);
+
+        List<PosDevice> posDeviceList = posDeviceRepository.findByStore(store);
+        Map<Item, Integer> itemSalesMap = new HashMap<>();
+        List<ReadSaledItemResponse> response = new ArrayList<>();
+
+        for(PosDevice posDevice : posDeviceList) {
+            List<Order> orderList = orderRepository.findByPosDeviceAndCreatedAtBetweenAndOrderStatus(posDevice, start, end, OrderStatusType.SUCCESS);
+
+            for(Order order : orderList) {
+                List<OrderItem> orderItems = order.getOrderItemList();
+
+                for(OrderItem orderItem : orderItems) {
+                    Item item = orderItem.getItem();
+                    Integer currentQuantity = itemSalesMap.getOrDefault(item, 0);
+                    itemSalesMap.put(item, currentQuantity + orderItem.getQuantity());
+                }
+            }
+        }
+
+        for(Item item : itemSalesMap.keySet()) {
+            Integer quantity = itemSalesMap.get(item);
+            response.add(ReadSaledItemResponse.from(item, quantity));
+        }
+
+        response.sort(Comparator.comparingInt(ReadSaledItemResponse::saleQuantity));
+
+        return response;
+    }
+
+    public List<ReadLowStockItemResponse> getLowStockItem(String userKey, Long storeId) {
+        Store store = validUserStore(userKey, storeId);
+
+        return itemRepository.findTop4ByStoreOrderByItemStockAsc(store).stream().map(ReadLowStockItemResponse::fromEntity).toList();
+    }
+
+    public void createItem(String userKey, CreateItemRequest request) {
+
+        Store store = validUserStore(userKey, request.storeId());
 
         itemRepository.save(request.toEntity(store));
     }
 
-    public void updateItem(Long userId, UpdateItemRequest request) {
+    public void updateItem(String userKey, UpdateItemRequest request) {
+
+        validUserStore(userKey, request.storeId());
 
          Item item = itemRepository.findById(request.itemId())
                  .orElseThrow(() -> new ApplicationException(
                          ErrorStatus.toErrorStatus("해당하는 아이템이 없습니다.", 404, LocalDateTime.now())
                  ));
 
-        if(!storeRepository.findByUser_UserId(userId).contains(item.getStore())) {
-            throw new ApplicationException(
-                    ErrorStatus.toErrorStatus("권한이 없는 가게입니다.", 401, LocalDateTime.now())
-            );
-        }
+         if(!request.isOrdered().equals(item.getIsOrdered())) {
+             item.updateIsOrdered(request.isOrdered());
+         }
 
-         //item update
+         if(!request.itemStock().equals(item.getItemStock())) {
+             item.updateItemStock(request.itemStock());
+         }
     }
 
-    public void deleteItem(Long userId, Long itemId) {
+    public void deleteItem(String userKey, Long itemId) {
 
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ApplicationException(
                         ErrorStatus.toErrorStatus("해당하는 아이템이 없습니다.", 404, LocalDateTime.now())
                 ));
 
-        if(!storeRepository.findByUser_UserId(userId).contains(item.getStore())) {
+        User user = userRepository.findByUserKey(userKey)
+                .orElseThrow(() -> new ApplicationException(
+                        ErrorStatus.toErrorStatus("해당하는 유저가 없습니다.", 404, LocalDateTime.now())
+                ));
+
+        if(!user.equals(item.getStore().getUser())) {
             throw new ApplicationException(
-                    ErrorStatus.toErrorStatus("권한이 없는 가게입니다.", 401, LocalDateTime.now())
+                    ErrorStatus.toErrorStatus("가게의 주인이 아닙니다.", 404, LocalDateTime.now())
             );
         }
 
         item.delete();
     }
 
-    private Store validUserStore(Long userId, Long storeId) {
+    private Store validUserStore(String userKey, Long storeId) {
+
+        User user = userRepository.findByUserKey(userKey)
+                .orElseThrow(() -> new ApplicationException(
+                        ErrorStatus.toErrorStatus("해당하는 유저가 없습니다.", 404, LocalDateTime.now())
+                ));
+
         Store store = storeRepository.findById(storeId)
                         .orElseThrow(() -> new ApplicationException(
                                 ErrorStatus.toErrorStatus("해당하는 가게가 없습니다.", 404, LocalDateTime.now())
                         ));
 
-        if(!storeRepository.findByUser_UserId(userId).contains(store)) {
+        if(!user.equals(store.getUser())) {
             throw new ApplicationException(
-                    ErrorStatus.toErrorStatus("권한이 없는 가게입니다.", 401, LocalDateTime.now())
+                    ErrorStatus.toErrorStatus("가게의 주인이 아닙니다.", 404, LocalDateTime.now())
             );
         }
+
         return store;
     }
 }

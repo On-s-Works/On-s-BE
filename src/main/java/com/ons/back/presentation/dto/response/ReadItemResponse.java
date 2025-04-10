@@ -7,13 +7,17 @@ import lombok.Builder;
 public record ReadItemResponse(
         String itemName,
         Integer itemStock,
-        Double itemPrice
+        Double itemPrice,
+        String itemImage,
+        String barcode
 ) {
     public static ReadItemResponse fromEntity(Item item) {
         return ReadItemResponse.builder()
                 .itemName(item.getItemName())
                 .itemStock(item.getItemStock())
                 .itemPrice(item.getItemPrice())
+                .itemImage(item.getItemImage())
+                .barcode(item.getBarcode())
                 .build();
     }
 }

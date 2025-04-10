@@ -84,6 +84,7 @@ public class OrderService {
     }
 
     private Store validateStoreOwner(String userKey, Long storeId) {
+
         User user = userRepository.findByUserKey(userKey)
                 .orElseThrow(() -> new ApplicationException(
                         ErrorStatus.toErrorStatus("해당하는 유저가 없습니다.", 404, LocalDateTime.now())
@@ -99,6 +100,7 @@ public class OrderService {
                     ErrorStatus.toErrorStatus("가게의 주인이 아닙니다.", 404, LocalDateTime.now())
             );
         }
+
         return store;
     }
 }

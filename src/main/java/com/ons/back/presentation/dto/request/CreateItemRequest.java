@@ -6,14 +6,21 @@ import com.ons.back.persistence.domain.Store;
 public record CreateItemRequest(
         String itemName,
         Double itemPrice,
-        Integer itemStock,
+        Double itemPurchasePrice,
+        String barcode,
+        String itemImage,
         Long storeId
 ) {
     public Item toEntity(Store store) {
         return Item.builder()
                 .itemName(itemName)
                 .itemPrice(itemPrice)
-                .itemStock(itemStock)
+                .itemPurchasePrice(itemPurchasePrice)
+                .itemStock(0)
+                .barcode(barcode)
+                .itemImage(itemImage)
+                .isActive(true)
+                .isOrdered(false)
                 .store(store)
                 .build();
     }

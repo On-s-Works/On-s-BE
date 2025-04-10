@@ -48,20 +48,20 @@ public class Order {
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "pos_device_id")
-    private PosDevice posDevice;
+    @JoinColumn(name = "store_id")
+    private Store store;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItemList = new ArrayList<>();
 
     @Builder
-    public Order(Long id, Double totalAmount, OrderStatusType orderStatus, PaymentType paymentType, LocalDateTime createdAt, PosDevice posDevice, List<OrderItem> orderItemList) {
+    public Order(Long id, Double totalAmount, OrderStatusType orderStatus, PaymentType paymentType, LocalDateTime createdAt, Store store, List<OrderItem> orderItemList) {
         this.id = id;
         this.totalAmount = totalAmount;
         this.orderStatus = orderStatus;
         this.paymentType = paymentType;
         this.createdAt = createdAt;
-        this.posDevice = posDevice;
+        this.store = store;
         this.orderItemList = orderItemList;
     }
 }

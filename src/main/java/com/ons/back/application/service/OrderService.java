@@ -3,13 +3,11 @@ package com.ons.back.application.service;
 import com.ons.back.commons.exception.ApplicationException;
 import com.ons.back.commons.exception.payload.ErrorStatus;
 import com.ons.back.persistence.domain.Order;
-import com.ons.back.persistence.domain.PosDevice;
 import com.ons.back.persistence.domain.Store;
 import com.ons.back.persistence.domain.User;
 import com.ons.back.persistence.domain.type.OrderStatusType;
 import com.ons.back.persistence.domain.type.PaymentType;
 import com.ons.back.persistence.repository.OrderRepository;
-import com.ons.back.persistence.repository.PosDeviceRepository;
 import com.ons.back.persistence.repository.StoreRepository;
 import com.ons.back.persistence.repository.UserRepository;
 import com.ons.back.presentation.dto.response.ReadOrderDetailResponse;
@@ -29,7 +27,6 @@ import java.util.List;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final PosDeviceRepository posDeviceRepository;
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
 
@@ -51,22 +48,17 @@ public class OrderService {
         Store store = validateStoreOwner(userKey, storeId);
 
         List<Order> orderList = new ArrayList<>();
-        List<PosDevice> posDeviceList = posDeviceRepository.findByStore(store);
 
         if(paymentStatusList != null && paymentTypeList != null) {
-            for(PosDevice posDevice : posDeviceList) {
-                for(String paymentType : paymentTypeList) {
-                    orderList.addAll(orderRepository.findByPosDeviceAndCreatedAtBetweenAndPaymentType(posDevice,start.toLocalDate().atStartOfDay(), end.plusDays(1).toLocalDate().atStartOfDay(), PaymentType.valueOf(paymentType)));
-                }
+            for(String paymentType : paymentTypeList) {
+                orderList.addAll(orderRepository.findByStoreAndCreatedAtBetweenAndPaymentType(store, start.toLocalDate().atStartOfDay(), end.plusDays(1).toLocalDate().atStartOfDay(), PaymentType.valueOf(paymentType)));
+            }
 
-                for(String paymentStatus : paymentStatusList) {
-                    orderList.addAll(orderRepository.findByPosDeviceAndCreatedAtBetweenAndOrderStatus(posDevice,start.toLocalDate().atStartOfDay(), end.plusDays(1).toLocalDate().atStartOfDay(), OrderStatusType.valueOf(paymentStatus)));
-                }
+            for(String paymentStatus : paymentStatusList) {
+                orderList.addAll(orderRepository.findByStoreAndCreatedAtBetweenAndOrderStatus(store, start.toLocalDate().atStartOfDay(), end.plusDays(1).toLocalDate().atStartOfDay(), OrderStatusType.valueOf(paymentStatus)));
             }
         } else {
-            for(PosDevice posDevice : posDeviceList) {
-                orderList.addAll(orderRepository.findByPosDeviceAndCreatedAtBetween(posDevice, start.toLocalDate().atStartOfDay(), end.plusDays(1).toLocalDate().atStartOfDay()));
-            }
+            orderList.addAll(orderRepository.findByStoreAndCreatedAtBetween(store, start.toLocalDate().atStartOfDay(), end.plusDays(1).toLocalDate().atStartOfDay()));
         }
 
         Comparator<Order> comparator = switch (sortType.toLowerCase()) {

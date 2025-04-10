@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
 @Service
@@ -24,7 +25,13 @@ public class StoreCalendarService {
 
     @Transactional(readOnly = true)
     public List<ReadCalendarResponse> getStoreCalendarByYearAndMonth(Long storeId, Integer year, Integer month) {
-        return storeCalendarRepository.findByStore_StoreIdAndYearAndMonth(storeId, year, month).stream().map(ReadCalendarResponse::fromEntity).toList();
+
+        LocalDateTime monthStart = LocalDateTime.of(year, month, 1, 0, 0);
+        LocalDateTime monthEnd = monthStart.with(TemporalAdjusters.lastDayOfMonth())
+                .withHour(23).withMinute(59).withSecond(59);
+
+        return storeCalendarRepository.findByStore_StoreIdAndStartGreaterThanEqualAndStartLessThanEqual(storeId, monthStart, monthEnd)
+                .stream().map(ReadCalendarResponse::fromEntity).toList();
     }
 
     public ReadCalendarResponse createStoreCalendar(CreateStoreCalendarRequest request) {

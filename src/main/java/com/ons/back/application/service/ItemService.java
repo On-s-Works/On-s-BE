@@ -26,7 +26,6 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final StoreRepository storeRepository;
     private final UserRepository userRepository;
-    private final PosDeviceRepository posDeviceRepository;
     private final OrderRepository orderRepository;
 
     public List<ReadItemResponse> getItemsByStoreId(String userKey, Long storeId) {
@@ -40,21 +39,18 @@ public class ItemService {
 
         Store store = validUserStore(userKey, storeId);
 
-        List<PosDevice> posDeviceList = posDeviceRepository.findByStore(store);
         Map<Item, Integer> itemSalesMap = new HashMap<>();
         List<ReadSaledItemResponse> response = new ArrayList<>();
 
-        for(PosDevice posDevice : posDeviceList) {
-            List<Order> orderList = orderRepository.findByPosDeviceAndCreatedAtBetweenAndOrderStatus(posDevice, start, end, OrderStatusType.SUCCESS);
+        List<Order> orderList = orderRepository.findByStoreAndCreatedAtBetweenAndOrderStatus(store, start, end, OrderStatusType.SUCCESS);
 
-            for(Order order : orderList) {
-                List<OrderItem> orderItems = order.getOrderItemList();
+        for(Order order : orderList) {
+            List<OrderItem> orderItems = order.getOrderItemList();
 
-                for(OrderItem orderItem : orderItems) {
-                    Item item = orderItem.getItem();
-                    Integer currentQuantity = itemSalesMap.getOrDefault(item, 0);
-                    itemSalesMap.put(item, currentQuantity + orderItem.getQuantity());
-                }
+            for(OrderItem orderItem : orderItems) {
+                Item item = orderItem.getItem();
+                Integer currentQuantity = itemSalesMap.getOrDefault(item, 0);
+                itemSalesMap.put(item, currentQuantity + orderItem.getQuantity());
             }
         }
 

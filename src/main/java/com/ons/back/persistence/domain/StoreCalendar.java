@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -17,14 +19,11 @@ public class StoreCalendar {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "year")
-    private Integer year;
+    @Column(name = "start_datetime")
+    LocalDateTime start;
 
-    @Column(name = "month")
-    private Integer month;
-
-    @Column(name = "day")
-    private Integer day;
+    @Column(name = "end_datetime")
+    LocalDateTime end;
 
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
@@ -34,11 +33,10 @@ public class StoreCalendar {
     private Store store;
 
     @Builder
-    public StoreCalendar(Long id, Integer year, Integer month, Integer day, String content, Store store) {
+    public StoreCalendar(Long id, LocalDateTime start, LocalDateTime end, String content, Store store) {
         this.id = id;
-        this.year = year;
-        this.month = month;
-        this.day = day;
+        this.start = start;
+        this.end = end;
         this.content = content;
         this.store = store;
     }

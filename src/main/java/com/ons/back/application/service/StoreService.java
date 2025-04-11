@@ -1,14 +1,11 @@
 package com.ons.back.application.service;
 
-import com.google.api.client.util.DateTime;
 import com.ons.back.commons.exception.ApplicationException;
 import com.ons.back.commons.exception.payload.ErrorStatus;
 import com.ons.back.persistence.domain.Order;
-import com.ons.back.persistence.domain.PosDevice;
 import com.ons.back.persistence.domain.Store;
 import com.ons.back.persistence.domain.User;
 import com.ons.back.persistence.repository.OrderRepository;
-import com.ons.back.persistence.repository.PosDeviceRepository;
 import com.ons.back.persistence.repository.StoreRepository;
 import com.ons.back.persistence.repository.UserRepository;
 import com.ons.back.presentation.dto.request.CreateStoreRequest;
@@ -31,7 +28,6 @@ public class StoreService {
     private final StoreRepository storeRepository;
     private final UserRepository userRepository;
     private final StorageService storageService;
-    private final PosDeviceRepository posDeviceRepository;
     private final OrderRepository orderRepository;
 
     @Transactional(readOnly = true)
@@ -63,12 +59,6 @@ public class StoreService {
         String imageUrl = storageService.uploadFirebaseBucket(file, "ons" + file.getOriginalFilename());
 
         storeRepository.save(request.toEntity(user, imageUrl));
-    }
-
-    public void updateStoreImage(String userKey, Long storeId, MultipartFile file) {
-        Store store = validateStoreOwner(userKey, storeId);
-        storageService.deleteFirebaseBucket(store.getStoreImage());
-        store.updateImage(storageService.uploadFirebaseBucket(file, "ons" + file.getOriginalFilename()));
     }
 
     public void updateStore(String userKey, UpdateStoreRequest request, MultipartFile file) {
@@ -120,19 +110,16 @@ public class StoreService {
         LocalDateTime lastWeekStart = todayStart.minusDays(7);
         LocalDateTime lastMonthStart = todayStart.minusMonths(1);
 
-        List<PosDevice> posDeviceList = posDeviceRepository.findByStore(store);
 
         List<Order> todayOrderList = new ArrayList<>();
         List<Order> yesterdayOrderList = new ArrayList<>();
         List<Order> lastWeekOrderList = new ArrayList<>();
         List<Order> lastMonthOrderList = new ArrayList<>();
 
-        for(PosDevice posDevice : posDeviceList) {
-            todayOrderList.addAll(orderRepository.findByPosDeviceAndCreatedAtBetween(posDevice, todayStart, todayEnd));
-            yesterdayOrderList.addAll(orderRepository.findByPosDeviceAndCreatedAtBetween(posDevice, yesterdayStart, todayStart));
-            lastWeekOrderList.addAll(orderRepository.findByPosDeviceAndCreatedAtBetween(posDevice, lastWeekStart, todayStart));
-            lastMonthOrderList.addAll(orderRepository.findByPosDeviceAndCreatedAtBetween(posDevice, lastMonthStart, todayStart));
-        }
+        todayOrderList.addAll(orderRepository.findByStoreAndCreatedAtBetween(store, todayStart, todayEnd));
+        yesterdayOrderList.addAll(orderRepository.findByStoreAndCreatedAtBetween(store, yesterdayStart, todayStart));
+        lastWeekOrderList.addAll(orderRepository.findByStoreAndCreatedAtBetween(store, lastWeekStart, todayStart));
+        lastMonthOrderList.addAll(orderRepository.findByStoreAndCreatedAtBetween(store, lastMonthStart, todayStart));
 
         Double todayTotalAmount = 0d;
         Double yesterdayTotalAmount = 0d;
@@ -185,17 +172,12 @@ public class StoreService {
             dates.add(firstDay);
         }
 
-        List<PosDevice> posDeviceList = posDeviceRepository.findByStore(store);
         List<Double> monthSaleAmounts = new ArrayList<>();
 
         for(int i = 0; i < 6; i++) {
-            double tempTotal = 0d;
-            for (PosDevice posDevice : posDeviceList) {
-                tempTotal += orderRepository.findByPosDeviceAndCreatedAtBetween(posDevice, dates.get(i), dates.get(i + 1))
-                        .stream().map(Order::getTotalAmount)
-                        .reduce(0d, Double::sum);
-            }
-            monthSaleAmounts.add(tempTotal);
+            monthSaleAmounts.add(orderRepository.findByStoreAndCreatedAtBetween(store, dates.get(i), dates.get(i + 1))
+                    .stream().map(Order::getTotalAmount)
+                    .reduce(0d, Double::sum));
         }
 
         Double total = monthSaleAmounts.stream().mapToDouble(Double::doubleValue).sum();

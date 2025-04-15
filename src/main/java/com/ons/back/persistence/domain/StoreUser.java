@@ -26,8 +26,8 @@ public class StoreUser {
     @Column(name = "store_user_display_name")
     private String storeUserDisplayName;
 
-    @Column(name = "store_user_created_at")
-    private LocalDate storeUserCreatedAt;
+    @Column(name = "registerDate")
+    private LocalDate registerDate;
 
     @Column(name = "store_user_point")
     private Double storeUserPoint;
@@ -38,19 +38,23 @@ public class StoreUser {
     @Column(name = "store_user_last_login")
     private LocalDate storeUserLastLogin;
 
+    @Column(name = "store_user_type")
+    private String storeUserType;
+
     @ManyToOne
     @JoinColumn(name = "store_id")
     private Store store;
 
     @Builder
-    public StoreUser(Long id, String storeUserName, String storeUserDisplayName, LocalDate storeUserCreatedAt, Double storeUserPoint, Double storeUserTotalPayment, LocalDate storeUserLastLogin, Store store) {
+    public StoreUser(Long id, String storeUserName, String storeUserDisplayName, LocalDate registerDate, Double storeUserPoint, Double storeUserTotalPayment, LocalDate storeUserLastLogin, String storeUserType, Store store) {
         this.id = id;
         this.storeUserName = storeUserName;
         this.storeUserDisplayName = storeUserDisplayName;
-        this.storeUserCreatedAt = storeUserCreatedAt;
+        this.registerDate = registerDate;
         this.storeUserPoint = storeUserPoint;
         this.storeUserTotalPayment = storeUserTotalPayment;
         this.storeUserLastLogin = storeUserLastLogin;
+        this.storeUserType = storeUserType;
         this.store = store;
     }
 }

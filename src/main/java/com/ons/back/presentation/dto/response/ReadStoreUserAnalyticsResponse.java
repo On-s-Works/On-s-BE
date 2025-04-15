@@ -5,7 +5,6 @@ import org.springframework.data.domain.Page;
 
 @Builder
 public record ReadStoreUserAnalyticsResponse(
-        Page<ReadStoreUserResponse> storeUserPage,
         long totalCount,
         long todayRegisterCount,
         double todayIncreaseRate,

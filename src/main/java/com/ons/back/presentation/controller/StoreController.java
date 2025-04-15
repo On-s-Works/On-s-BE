@@ -54,7 +54,7 @@ public class StoreController {
 
     @Operation(summary = "가게 생성", description = "관리할 가게를 생성합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "가게 상세 조회 성공"),
+            @ApiResponse(responseCode = "201", description = "가게 생성 성공"),
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })

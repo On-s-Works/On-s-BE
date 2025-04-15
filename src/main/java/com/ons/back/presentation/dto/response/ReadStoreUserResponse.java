@@ -10,7 +10,7 @@ public record ReadStoreUserResponse(
         Long id,
         String storeUserName,
         String storeUserDisplayName,
-        LocalDate storeUserCreatedAt,
+        LocalDate registerDate,
         Double storeUserPoint,
         Double storeUserTotalPayment,
         LocalDate storeUserLastLogin
@@ -20,7 +20,7 @@ public record ReadStoreUserResponse(
                 .id(storeUser.getId())
                 .storeUserName(storeUser.getStoreUserName())
                 .storeUserDisplayName(storeUser.getStoreUserDisplayName())
-                .storeUserCreatedAt(storeUser.getStoreUserCreatedAt())
+                .registerDate(storeUser.getRegisterDate())
                 .storeUserTotalPayment(storeUser.getStoreUserTotalPayment())
                 .storeUserLastLogin(storeUser.getStoreUserLastLogin())
                 .build();

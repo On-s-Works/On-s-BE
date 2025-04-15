@@ -64,30 +64,30 @@ public class StoreUserService {
 
         long todayRegisterStoreUser = storeUserResponseList.stream()
                 .filter(
-                        storeUser -> storeUser.storeUserCreatedAt().equals(now.toLocalDate())
+                        storeUser -> storeUser.registerDate().equals(now.toLocalDate())
                 ).count();
 
         long yesterdayRegisterStoreUser = storeUserResponseList.stream()
                 .filter(
-                        storeUser -> storeUser.storeUserCreatedAt().equals(now.toLocalDate().minusDays(1))
+                        storeUser -> storeUser.registerDate().equals(now.toLocalDate().minusDays(1))
                 ).count();
 
         long thisWeekRegisterStoreUser = storeUserResponseList.stream()
-                .filter(storeUser -> storeUser.storeUserCreatedAt().isAfter(LocalDate.now().minusDays(7)))
+                .filter(storeUser -> storeUser.registerDate().isAfter(LocalDate.now().minusDays(7)))
                 .count();
 
         long lastWeekRegisterStoreUser = storeUserResponseList.stream()
-                .filter(storeUser -> storeUser.storeUserCreatedAt().isAfter(LocalDate.now().minusDays(14)))
+                .filter(storeUser -> storeUser.registerDate().isAfter(LocalDate.now().minusDays(14)))
                 .count() - thisWeekRegisterStoreUser;
 
         long thisMonthRegisterStoreUser = storeUserResponseList.stream()
-                .filter(storeUser -> storeUser.storeUserCreatedAt().getYear() == now.getYear() &&
-                        storeUser.storeUserCreatedAt().getMonth() == now.getMonth())
+                .filter(storeUser -> storeUser.registerDate().getYear() == now.getYear() &&
+                        storeUser.registerDate().getMonth() == now.getMonth())
                 .count();
 
         long lastMonthRegisterStoreUser = storeUserResponseList.stream()
                 .filter(storeUser -> {
-                    LocalDate createdAt = storeUser.storeUserCreatedAt();
+                    LocalDate createdAt = storeUser.registerDate();
                     int createdYear = createdAt.getYear();
                     Month createdMonth = createdAt.getMonth();
 
@@ -148,19 +148,15 @@ public class StoreUserService {
             );
         }
 
-        List<ReadStoreUserResponse> result = new ArrayList<>();
+        List<StoreUser> storeUserList = new ArrayList<>();
 
         if(userTypeList.isEmpty()) {
-            result.addAll(storeUserRepository.findByRegisterDateBetween(startTime, endTime).stream().map(ReadStoreUserResponse::fromEntity).toList());
+            storeUserList.addAll(storeUserRepository.findByRegisterDateBetween(startTime, endTime));
         } else {
-
-            List<StoreUser> storeUserList = new ArrayList<>();
 
             for(String type : userTypeList) {
                 storeUserList.addAll(storeUserRepository.findByRegisterDateBetweenAndStoreUserType(startTime, endTime, type));
             }
-
-            result.addAll(storeUserList.stream().map(ReadStoreUserResponse::fromEntity).toList());
         }
 
         Comparator<StoreUser> comparator = switch (sortType.toLowerCase()) {
@@ -173,6 +169,9 @@ public class StoreUserService {
             case "store_user_display_name_asc" -> Comparator.comparing(StoreUser::getStoreUserDisplayName).reversed();
             default -> Comparator.comparing(StoreUser::getRegisterDate).reversed();
         };
+
+        storeUserList.sort(comparator);
+        List<ReadStoreUserResponse> result = storeUserList.stream().map(ReadStoreUserResponse::fromEntity).toList();
 
         int start = (int) pageable.getOffset();
         int end = Math.min(start + pageable.getPageSize(), result.size());

@@ -10,13 +10,19 @@ import java.util.List;
 public record ReadOrderDetailResponse(
         Long orderId,
         LocalDateTime orderDate,
-        List<ReadOrderItemResponse> orderItemResponseList
+        List<ReadOrderItemResponse> orderItemResponseList,
+        Double supplyAmount,
+        Double vat,
+        Double totalAmount
 ) {
     public static ReadOrderDetailResponse fromEntity(Order order) {
         return ReadOrderDetailResponse.builder()
                 .orderId(order.getId())
                 .orderDate(order.getCreatedAt())
                 .orderItemResponseList(order.getOrderItemList().stream().map(ReadOrderItemResponse::fromEntity).toList())
+                .supplyAmount(order.getTotalAmount() * 10 / 11)
+                .vat(order.getTotalAmount() * 1 / 11)
+                .totalAmount(order.getTotalAmount())
                 .build();
     }
 }

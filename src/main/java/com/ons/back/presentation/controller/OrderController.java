@@ -56,4 +56,15 @@ public class OrderController {
     public ResponseEntity<ReadOrderDetailResponse> getOrderDetail(@PathVariable Long orderId) {
         return ResponseEntity.ok(orderService.getOrderDetail(orderId));
     }
+
+    @Operation(summary = "주문 아이디 검색", description = "주문 id로 검색하여 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "검색 성공", content = @Content(schema = @Schema(implementation = ReadOrderResponse.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    @GetMapping("/search/{orderId}")
+    public ResponseEntity<ReadOrderResponse> search(@PathVariable Long orderId) {
+        return ResponseEntity.ok(orderService.getOrderById(orderId));
+    }
 }

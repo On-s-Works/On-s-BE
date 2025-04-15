@@ -95,4 +95,11 @@ public class OrderService {
 
         return store;
     }
+
+    public ReadOrderResponse getOrderById(Long orderId) {
+        return ReadOrderResponse.fromEntity(orderRepository.findById(orderId)
+                .orElseThrow(() -> new ApplicationException(
+                        ErrorStatus.toErrorStatus("해당하는 주문이 없습니다.", 404, LocalDateTime.now())
+                )));
+    }
 }

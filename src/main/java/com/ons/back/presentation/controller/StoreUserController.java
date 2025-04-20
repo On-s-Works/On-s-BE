@@ -21,7 +21,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -43,10 +42,16 @@ public class StoreUserController {
         return ResponseEntity.ok(storeUserService.analytics(user.getUsername(), storeId));
     }
 
+    @Operation(summary = "가게의 사용자들을 가져옵니다.", description = "가게 사용자들을 가져옵니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "가게 사용자 조회 성공", content = @Content(schema = @Schema(implementation = List.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
     @GetMapping
     public ResponseEntity<Page<ReadStoreUserResponse>> getStoreUser(@AuthenticationPrincipal UserDetails user,
                                                                     @RequestParam Long storeId,
-                                                                    @RequestParam(required = false, defaultValue = "created_at_desc") String sortType,
+                                                                    @RequestParam(required = false, defaultValue = "register_date_desc") String sortType,
                                                                     @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate startTime,
                                                                     @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate endTime,
                                                                     @RequestParam(required = false) List<String> userTypeList,
@@ -62,11 +67,23 @@ public class StoreUserController {
         return ResponseEntity.ok(storeUserService.getStoreUser(user.getUsername(), storeId, sortType, startTime, endTime, userTypeList, pageable));
     }
 
+    @Operation(summary = "가게 사용자 생성", description = "가게 사용자 생성.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "가게 사용자 생성 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
     @PostMapping
     public ResponseEntity<Long> createStoreUser(@AuthenticationPrincipal UserDetails user, @RequestBody CreateStoreUserRequest request) {
         return ResponseEntity.ok(storeUserService.createStoreUser(user.getUsername(), request));
     }
 
+    @Operation(summary = "가게 사용자 메시지 보내기", description = "가게 사용자에게 메시지 보내기 (현재 번호, 이메일 받는 값 없어서 작동 x)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "메시지 보내기 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
     @PostMapping("/message")
     public ResponseEntity<Void> sendMessage(@AuthenticationPrincipal UserDetails user, @RequestBody CreateStoreUserMessageRequest request) {
         storeUserService.sendStoreUserMessage(user.getUsername(), request);

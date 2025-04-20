@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -58,8 +59,8 @@ public class StoreController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    @PostMapping
-    public ResponseEntity<Void> createStore(@AuthenticationPrincipal UserDetails user, @RequestBody CreateStoreRequest request, @RequestParam(required = false) MultipartFile file) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> createStore(@AuthenticationPrincipal UserDetails user, @RequestPart(value = "request") CreateStoreRequest request, @RequestPart(value = "file", required = false) MultipartFile file) {
         storeService.createStore(user.getUsername(), request, file);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

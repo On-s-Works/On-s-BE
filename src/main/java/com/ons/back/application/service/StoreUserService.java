@@ -160,7 +160,7 @@ public class StoreUserService {
         }
 
         Comparator<StoreUser> comparator = switch (sortType.toLowerCase()) {
-            case "register_date_desc" -> Comparator.comparing(StoreUser::getRegisterDate);
+            case "register_date_asc" -> Comparator.comparing(StoreUser::getRegisterDate);
             case "total_payment_desc" -> Comparator.comparing(StoreUser::getStoreUserTotalPayment);
             case "total_payment_asc" -> Comparator.comparing(StoreUser::getStoreUserTotalPayment).reversed();
             case "store_user_name_desc" -> Comparator.comparing(StoreUser::getStoreUserName);

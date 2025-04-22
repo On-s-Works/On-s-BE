@@ -56,7 +56,11 @@ public class StoreService {
                         ErrorStatus.toErrorStatus("해당하는 유저가 없습니다.", 404, LocalDateTime.now())
                 ));
 
-        String imageUrl = storageService.uploadFirebaseBucket(file, "ons" + file.getOriginalFilename());
+        String imageUrl = null;
+
+        if(!file.isEmpty()) {
+            imageUrl = storageService.uploadFirebaseBucket(file, "ons" + file.getOriginalFilename());
+        }
 
         storeRepository.save(request.toEntity(user, imageUrl));
     }

@@ -59,7 +59,7 @@ public class StoreService {
         String imageUrl = null;
 
         if(!file.isEmpty()) {
-            imageUrl = storageService.uploadFirebaseBucket(file, "ons" + file.getOriginalFilename());
+            imageUrl = storageService.uploadImage(file);
         }
 
         storeRepository.save(request.toEntity(user, imageUrl));
@@ -93,8 +93,8 @@ public class StoreService {
         }
 
         if(!file.isEmpty()) {
-            storageService.deleteFirebaseBucket(store.getStoreImage());
-            store.updateImage(storageService.uploadFirebaseBucket(file, "ons" + file.getOriginalFilename()));
+            storageService.deleteImage(store.getStoreImage());
+            store.updateImage(storageService.uploadImage(file));
         }
     }
 

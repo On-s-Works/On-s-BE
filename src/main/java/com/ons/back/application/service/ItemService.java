@@ -116,7 +116,7 @@ public class ItemService {
         String itemImage = null;
 
         if(file != null) {
-            itemImage = storageService.uploadFirebaseBucket(file, "item" + file.getName());
+            itemImage = storageService.uploadImage(file);
         }
 
         itemRepository.save(request.toEntity(store, itemImage));

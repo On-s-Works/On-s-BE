@@ -11,7 +11,8 @@ public record ReadStoreResponse(
         String addressDetail,
         String storeType,
         boolean isSale,
-        boolean isManage
+        boolean isManage,
+        String storeImage
 ) {
     public static ReadStoreResponse fromEntity(Store store) {
         return ReadStoreResponse.builder()
@@ -22,6 +23,7 @@ public record ReadStoreResponse(
                 .storeType(store.getStoreType())
                 .isSale(store.isSale())
                 .isManage(store.isManage())
+                .storeImage(store.getStoreImage())
                 .build();
     }
 }

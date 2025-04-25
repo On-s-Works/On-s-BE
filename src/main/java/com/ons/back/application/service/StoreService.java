@@ -58,7 +58,7 @@ public class StoreService {
 
         String imageUrl = null;
 
-        if(!file.isEmpty()) {
+        if(file != null && !file.isEmpty()) {
             imageUrl = storageService.uploadImage(file);
         }
 

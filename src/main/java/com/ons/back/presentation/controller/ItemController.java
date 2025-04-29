@@ -36,7 +36,7 @@ public class ItemController {
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     @PostMapping
-    public ResponseEntity<Void> addItem(@RequestBody CreateItemRequest request, @AuthenticationPrincipal UserDetails user, @RequestParam(required = false) MultipartFile file) {
+    public ResponseEntity<Void> addItem(@RequestPart CreateItemRequest request, @AuthenticationPrincipal UserDetails user, @RequestPart(required = false) MultipartFile file) {
         itemService.createItem(user.getUsername(), request, file);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

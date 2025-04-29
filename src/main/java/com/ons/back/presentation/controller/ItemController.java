@@ -2,6 +2,7 @@ package com.ons.back.presentation.controller;
 
 import com.ons.back.application.service.ItemService;
 import com.ons.back.presentation.dto.request.CreateItemRequest;
+import com.ons.back.presentation.dto.request.CreateStoreRequest;
 import com.ons.back.presentation.dto.request.UpdateItemRequest;
 import com.ons.back.presentation.dto.response.ReadItemResponse;
 import com.ons.back.presentation.dto.response.ReadLowStockItemResponse;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -35,8 +37,8 @@ public class ItemController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    @PostMapping
-    public ResponseEntity<Void> addItem(@RequestPart CreateItemRequest request, @AuthenticationPrincipal UserDetails user, @RequestPart(required = false) MultipartFile file) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> addItem(@AuthenticationPrincipal UserDetails user, @RequestPart(value = "request") CreateItemRequest request, @RequestPart(value = "file", required = false) MultipartFile file) {
         itemService.createItem(user.getUsername(), request, file);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

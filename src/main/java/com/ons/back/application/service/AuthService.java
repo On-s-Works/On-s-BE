@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 public class AuthService {
 
     private final UserRepository userRepository;
-    private final TokenRepository tokenRepository;
+    private final TokenService tokenService;
     private final PasswordEncoder passwordEncoder;
 
     public void signUp(SignUpRequest request) {
@@ -34,13 +34,8 @@ public class AuthService {
                 });
     }
 
-    public void logout(String accessToken, HttpServletResponse response) {
-        accessToken = accessToken.substring(7);
-        tokenRepository.deleteByAccessToken(accessToken);
-        Cookie cookie = new Cookie("refresh_token", null);
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
+    public void logout(String userKey, HttpServletResponse response) {
+        tokenService.deleteRefreshToken(userKey);
         response.setHeader("Authorization", "");
     }
 

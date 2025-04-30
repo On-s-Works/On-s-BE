@@ -45,12 +45,11 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         if (tokenProvider.validateToken(accessToken)) {
             setAuthentication(accessToken);
         } else if(tokenProvider.validateToken(refreshToken)) {
-            TokenResponse reissuedToken = tokenProvider.reissueAccessToken(accessToken, refreshToken);
+            String reissueAccessToken = tokenProvider.reissueAccessToken(accessToken, refreshToken);
 
-            if(StringUtils.hasText(reissuedToken.accessToken()) && StringUtils.hasText(reissuedToken.refreshToken())){
-                setAuthentication(reissuedToken.accessToken());
-                response.setHeader(AUTHORIZATION, TOKEN_PREFIX + reissuedToken.accessToken());
-                setRefreshTokenCookie(response, reissuedToken.refreshToken());
+            if(StringUtils.hasText(reissueAccessToken)){
+                setAuthentication(reissueAccessToken);
+                response.setHeader(AUTHORIZATION, TOKEN_PREFIX + reissueAccessToken);
             }
         }
 
@@ -107,14 +106,5 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         }
 
         return null;
-    }
-
-    public void setRefreshTokenCookie(HttpServletResponse response, String refreshToken) {
-        Cookie cookie = new Cookie("refresh_token", refreshToken);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(7 * 24 * 60 * 60);
-        response.addCookie(cookie);
     }
 }

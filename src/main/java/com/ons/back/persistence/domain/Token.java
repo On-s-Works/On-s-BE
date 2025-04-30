@@ -1,33 +1,26 @@
 package com.ons.back.persistence.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
 
-@Table(name = "token")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Entity
+@RedisHash(value = "jwt", timeToLive = 60 * 60 * 24)
 public class Token {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "token_id")
-    private Long tokenId;
+    private String id;
 
-    @Column(name = "access_token", unique = true)
+    @Indexed
     private String accessToken;
 
-    @Column(name = "refresh_token", unique = true)
     private String refreshToken;
 
-    @Column(name = "userKey")
-    private String userKey;
-
-    public void updateRefreshToken(String refreshToken) {
+    public Token updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
+        return this;
     }
 
     public void updateAccessToken(String accessToken) {
@@ -35,10 +28,9 @@ public class Token {
     }
 
     @Builder
-    public Token(Long tokenId, String accessToken, String refreshToken, String userKey) {
-        this.tokenId = tokenId;
+    public Token(String id, String accessToken, String refreshToken) {
+        this.id = id;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
-        this.userKey = userKey;
     }
 }

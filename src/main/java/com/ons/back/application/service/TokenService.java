@@ -17,16 +17,21 @@ public class TokenService {
 
     private final TokenRepository tokenRepository;
 
+    public void deleteRefreshToken(String memberKey) {
+        tokenRepository.deleteById(memberKey);
+    }
+
     public String saveOrUpdate(String userKey, String refreshToken, String accessToken) {
 
         Token token = tokenRepository.findByAccessToken(accessToken)
+                .map(o -> o.updateRefreshToken(refreshToken))
                 .orElseGet(() -> tokenRepository.save(Token.builder()
                         .accessToken(accessToken)
                         .refreshToken(refreshToken)
-                        .userKey(userKey)
+                        .id(userKey)
                         .build()));
 
-        token.updateRefreshToken(refreshToken);
+        tokenRepository.save(token);
 
         return refreshToken;
     }
@@ -34,12 +39,12 @@ public class TokenService {
     public Token findByAccessTokenOrThrow(String accessToken) {
         return tokenRepository.findByAccessToken(accessToken)
                 .orElseThrow(() -> new TokenException(
-                        ErrorStatus.toErrorStatus("토큰이 만료되었습니다", 401, LocalDateTime.now())));
+                        ErrorStatus.toErrorStatus("토큰을 찾을 수 없습니다.", 401, LocalDateTime.now())));
     }
 
     @Transactional
-    public void updateToken(String accessToken, String refreshToken, Token token) {
+    public void updateToken(String accessToken, Token token) {
         token.updateAccessToken(accessToken);
-        token.updateRefreshToken(refreshToken);
+        tokenRepository.save(token);
     }
 }

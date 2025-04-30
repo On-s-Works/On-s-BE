@@ -34,7 +34,7 @@ public class TokenProvider {
     private final TokenService tokenService;
 
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30L;
-    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60L * 24 * 7;
+    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60L * 24;
     private static final String KEY_ROLE = "ROLE_USER";
 
     @Autowired
@@ -82,19 +82,15 @@ public class TokenProvider {
                 claims.get(KEY_ROLE).toString()));
     }
 
-    public TokenResponse reissueAccessToken(String accessToken, String refreshToken) {
+    public String reissueAccessToken(String accessToken, String refreshToken) {
         if (StringUtils.hasText(accessToken)) {
             Token token = tokenService.findByAccessTokenOrThrow(accessToken);
 
             if(refreshToken.equals(token.getRefreshToken()) && validateToken(refreshToken)) {
                 String reissueAccessToken = generateAccessToken(getAuthentication(refreshToken));
-                String reissueRefreshToken = generateRefreshToken(getAuthentication(refreshToken), refreshToken);
-                tokenService.updateToken(reissueAccessToken, reissueRefreshToken ,token);
+                tokenService.updateToken(reissueAccessToken ,token);
 
-                return TokenResponse.builder()
-                        .accessToken(reissueAccessToken)
-                        .refreshToken(reissueRefreshToken)
-                        .build();
+                return reissueAccessToken;
             }
         }
         return null;

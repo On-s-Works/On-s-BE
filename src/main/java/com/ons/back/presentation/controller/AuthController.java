@@ -14,6 +14,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -43,8 +45,8 @@ public class AuthController {
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String accessToken, HttpServletResponse response) {
-        authService.logout(accessToken, response);
+    public ResponseEntity<Void> logout(@AuthenticationPrincipal UserDetails user, HttpServletResponse response) {
+        authService.logout(user.getUsername(), response);
         return ResponseEntity.ok().build();
     }
 

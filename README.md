@@ -9,7 +9,7 @@
 
 > 개발 기간 : 2025.2 ~ 2025.5 <br/>
 - 무인매장 관리 시스템 On's입니다. <br/>
-- URL : [https://on-s-fe.vercel.app/home/service](https://on-s-fe.vercel.app/home/service))
+- URL : [https://on-s-fe.vercel.app/home/service](https://on-s-fe.vercel.app/home/service)
 
 <br/>
 
@@ -36,7 +36,7 @@
 
 # ERD
 
-![Uploading 스크린샷 2025-05-02 오후 4.49.00.png…]()
+<img width="1314" alt="스크린샷 2025-05-02 오후 4 49 00" src="https://github.com/user-attachments/assets/0bc29533-5e3a-4321-a219-11ef589bffed" />
 
 <br/>
 

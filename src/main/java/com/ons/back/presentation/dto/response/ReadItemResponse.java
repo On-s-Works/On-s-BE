@@ -5,6 +5,7 @@ import lombok.Builder;
 
 @Builder
 public record ReadItemResponse(
+        Long id,
         String itemName,
         Integer itemStock,
         Double itemPrice,
@@ -13,6 +14,7 @@ public record ReadItemResponse(
 ) {
     public static ReadItemResponse fromEntity(Item item) {
         return ReadItemResponse.builder()
+                .id(item.getId())
                 .itemName(item.getItemName())
                 .itemStock(item.getItemStock())
                 .itemPrice(item.getItemPrice())

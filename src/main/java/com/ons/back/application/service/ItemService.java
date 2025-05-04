@@ -39,22 +39,22 @@ public class ItemService {
 
         if(saleStatus != null){
             if(saleStatus) {
-                itemList.addAll(itemRepository.findByStore_StoreIdAndItemStockGreaterThan(storeId, 1));
+                itemList.addAll(itemRepository.findByStore_StoreIdAndIsActiveTrueAndItemStockGreaterThan(storeId, 1));
             } else {
-                itemList.addAll(itemRepository.findByStore_StoreIdAndItemStock(storeId, 0));
+                itemList.addAll(itemRepository.findByStore_StoreIdAndItemStockAndIsActiveTrue(storeId, 0));
             }
         }
 
         if(isOrdered != null) {
             if(isOrdered) {
-                itemList.addAll(itemRepository.findByStore_StoreIdAndIsOrdered(storeId, true));
+                itemList.addAll(itemRepository.findByStore_StoreIdAndIsOrderedAndIsActiveTrue(storeId, true));
             } else {
-                itemList.addAll(itemRepository.findByStore_StoreIdAndIsOrdered(storeId, false));
+                itemList.addAll(itemRepository.findByStore_StoreIdAndIsOrderedAndIsActiveTrue(storeId, false));
             }
         }
 
         if(isOrdered == null && saleStatus == null) {
-            itemList.addAll(itemRepository.findByStore_StoreId(storeId));
+            itemList.addAll(itemRepository.findByStore_StoreIdAndIsActiveTrue(storeId));
         }
 
         Comparator<Item> comparator = switch (sortType.toLowerCase()) {
@@ -106,7 +106,7 @@ public class ItemService {
     public List<ReadLowStockItemResponse> getLowStockItem(String userKey, Long storeId) {
         Store store = validUserStore(userKey, storeId);
 
-        return itemRepository.findTop4ByStoreOrderByItemStockAsc(store).stream().map(ReadLowStockItemResponse::fromEntity).toList();
+        return itemRepository.findTop4ByStoreAndIsActiveTrueOrderByItemStockAsc(store).stream().map(ReadLowStockItemResponse::fromEntity).toList();
     }
 
     public void createItem(String userKey, CreateItemRequest request, MultipartFile file) {

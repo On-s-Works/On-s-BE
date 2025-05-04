@@ -1,6 +1,5 @@
 package com.ons.back.commons.filter;
 
-import com.ons.back.commons.dto.TokenResponse;
 import com.ons.back.commons.utils.TokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

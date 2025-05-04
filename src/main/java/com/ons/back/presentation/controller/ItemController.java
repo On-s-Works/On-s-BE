@@ -2,7 +2,7 @@ package com.ons.back.presentation.controller;
 
 import com.ons.back.application.service.ItemService;
 import com.ons.back.presentation.dto.request.CreateItemRequest;
-import com.ons.back.presentation.dto.request.CreateStoreRequest;
+import com.ons.back.presentation.dto.request.DeleteItemRequest;
 import com.ons.back.presentation.dto.request.UpdateItemRequest;
 import com.ons.back.presentation.dto.response.ReadItemResponse;
 import com.ons.back.presentation.dto.response.ReadLowStockItemResponse;
@@ -91,9 +91,9 @@ public class ItemController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    @DeleteMapping("/{itemId}")
-    public ResponseEntity<Void> deleteItem(@PathVariable Long itemId, @AuthenticationPrincipal UserDetails user) {
-        itemService.deleteItem(user.getUsername(), itemId);
+    @DeleteMapping
+    public ResponseEntity<Void> deleteItem(@RequestBody DeleteItemRequest request, @AuthenticationPrincipal UserDetails user) {
+        itemService.deleteItem(user.getUsername(), request.itemId());
         return ResponseEntity.noContent().build();
     }
 

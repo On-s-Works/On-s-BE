@@ -24,6 +24,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -150,10 +151,9 @@ public class StoreUserService {
 
         List<StoreUser> storeUserList = new ArrayList<>();
 
-        if(userTypeList.isEmpty()) {
+        if(userTypeList == null || userTypeList.isEmpty()) {
             storeUserList.addAll(storeUserRepository.findByRegisterDateBetween(startTime, endTime));
         } else {
-
             for(String type : userTypeList) {
                 storeUserList.addAll(storeUserRepository.findByRegisterDateBetweenAndStoreUserType(startTime, endTime, type));
             }
@@ -175,6 +175,10 @@ public class StoreUserService {
 
         int start = (int) pageable.getOffset();
         int end = Math.min(start + pageable.getPageSize(), result.size());
+
+        if (start >= result.size()) {
+            return new PageImpl<>(Collections.emptyList(), pageable, result.size());
+        }
 
         List<ReadStoreUserResponse> subList = result.subList(start, end);
         return new PageImpl<>(subList, pageable, result.size());

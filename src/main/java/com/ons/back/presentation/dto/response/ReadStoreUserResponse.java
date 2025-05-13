@@ -13,7 +13,8 @@ public record ReadStoreUserResponse(
         LocalDate registerDate,
         Double storeUserPoint,
         Double storeUserTotalPayment,
-        LocalDate storeUserLastLogin
+        LocalDate storeUserLastLogin,
+        String storeUserType
 ) {
     public static ReadStoreUserResponse fromEntity(StoreUser storeUser) {
         return ReadStoreUserResponse.builder()
@@ -23,6 +24,7 @@ public record ReadStoreUserResponse(
                 .registerDate(storeUser.getRegisterDate())
                 .storeUserTotalPayment(storeUser.getStoreUserTotalPayment())
                 .storeUserLastLogin(storeUser.getStoreUserLastLogin())
+                .storeUserType(storeUser.getStoreUserType())
                 .build();
     }
 }

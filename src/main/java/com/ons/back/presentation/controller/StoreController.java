@@ -72,7 +72,7 @@ public class StoreController {
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> updateStoreName(@AuthenticationPrincipal UserDetails user, @RequestPart(value = "request") UpdateStoreRequest request, @RequestParam(value = "file", required = false) MultipartFile file) {
+    public ResponseEntity<Void> updateStoreName(@AuthenticationPrincipal UserDetails user, @RequestPart(value = "request") UpdateStoreRequest request, @RequestPart(value = "file", required = false) MultipartFile file) {
         storeService.updateStore(user.getUsername(), request, file);
         return ResponseEntity.noContent().build();
     }

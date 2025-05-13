@@ -12,6 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -52,12 +56,14 @@ public class StorageService {
         if (amazonS3Client.doesObjectExist(bucket, fileName)) {
             amazonS3Client.deleteObject(bucket, fileName);
         } else {
-            throw new IllegalArgumentException("해당 이미지가 존재하지 않습니다: " + fileName);
+            log.error("해당 이미지가 존재하지 않습니다: {} ", fileName);
         }
     }
 
     // S3 URL에서 파일 이름 추출
     private String extractFileNameFromUrl(String imageUrl) {
-        return imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+        URI uri = URI.create(imageUrl);
+        String path = uri.getPath().substring(1);
+        return URLDecoder.decode(path, StandardCharsets.UTF_8);
     }
 }

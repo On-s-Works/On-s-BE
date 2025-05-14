@@ -23,6 +23,9 @@
   - Spring Data
     - Spring Data JPA
     - Spring Data Redis
+  - Spring Security
+    - OAuth (Google, Naver, Kakao)
+    - JWT 0.12.3
 - 데이터베이스
   - MySQL: 8.0.37
   - Redis
@@ -31,7 +34,8 @@
 - AWS
   - EC2
   - S3
- 
+- ETC
+  - CoolSMS
   <br/>
 
 # ERD

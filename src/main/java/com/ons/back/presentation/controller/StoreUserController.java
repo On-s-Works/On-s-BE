@@ -3,6 +3,7 @@ package com.ons.back.presentation.controller;
 import com.ons.back.application.service.StoreUserService;
 import com.ons.back.presentation.dto.request.CreateStoreUserMessageRequest;
 import com.ons.back.presentation.dto.request.CreateStoreUserRequest;
+import com.ons.back.presentation.dto.request.DeleteStoreUserRequest;
 import com.ons.back.presentation.dto.response.ReadStoreUserAnalyticsResponse;
 import com.ons.back.presentation.dto.response.ReadStoreUserResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -87,6 +88,12 @@ public class StoreUserController {
     @PostMapping("/message")
     public ResponseEntity<Void> sendMessage(@AuthenticationPrincipal UserDetails user, @RequestBody CreateStoreUserMessageRequest request) {
         storeUserService.sendStoreUserMessage(user.getUsername(), request);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteStoreUser(@AuthenticationPrincipal UserDetails user, @RequestBody DeleteStoreUserRequest request) {
+        storeUserService.deleteStoreUser(user.getUsername(), request);
         return ResponseEntity.noContent().build();
     }
 }

@@ -11,6 +11,7 @@ import com.ons.back.persistence.repository.StoreUserRepository;
 import com.ons.back.persistence.repository.UserRepository;
 import com.ons.back.presentation.dto.request.CreateStoreUserMessageRequest;
 import com.ons.back.presentation.dto.request.CreateStoreUserRequest;
+import com.ons.back.presentation.dto.request.DeleteStoreUserRequest;
 import com.ons.back.presentation.dto.response.ReadStoreUserAnalyticsResponse;
 import com.ons.back.presentation.dto.response.ReadStoreUserResponse;
 import lombok.RequiredArgsConstructor;
@@ -152,10 +153,10 @@ public class StoreUserService {
         List<StoreUser> storeUserList = new ArrayList<>();
 
         if(userTypeList == null || userTypeList.isEmpty()) {
-            storeUserList.addAll(storeUserRepository.findByRegisterDateBetween(startTime, endTime));
+            storeUserList.addAll(storeUserRepository.findByRegisterDateBetweenAndStore(startTime, endTime, store));
         } else {
             for(String type : userTypeList) {
-                storeUserList.addAll(storeUserRepository.findByRegisterDateBetweenAndStoreUserType(startTime, endTime, type));
+                storeUserList.addAll(storeUserRepository.findByRegisterDateBetweenAndStoreUserTypeAndStore(startTime, endTime, type, store));
             }
         }
 
@@ -214,5 +215,26 @@ public class StoreUserService {
         }
 
 //        smsSendService.sendSmsContent();
+    }
+
+    public void deleteStoreUser(String userKey, DeleteStoreUserRequest request) {
+
+        User user = userRepository.findByUserKey(userKey)
+                .orElseThrow(() -> new ApplicationException(
+                        ErrorStatus.toErrorStatus("해당하는 유저가 없습니다.", 404, LocalDateTime.now())
+                ));
+
+        Store store = storeRepository.findById(request.storeId())
+                .orElseThrow(() -> new ApplicationException(
+                        ErrorStatus.toErrorStatus("해당하는 가게가 없습니다.", 404, LocalDateTime.now())
+                ));
+
+        if(!store.getUser().equals(user)) {
+            throw new ApplicationException(
+                    ErrorStatus.toErrorStatus("권한이 없습니다.", 401, LocalDateTime.now())
+            );
+        }
+
+        storeUserRepository.deleteById(request.storeUserId());
     }
 }

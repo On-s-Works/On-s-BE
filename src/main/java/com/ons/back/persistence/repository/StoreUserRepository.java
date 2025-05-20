@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface StoreUserRepository extends JpaRepository<StoreUser, Long> {
     List<StoreUser> findByStore(Store store);
-    List<StoreUser> findByRegisterDateBetween(LocalDate startDate, LocalDate endDate);
-    List<StoreUser> findByRegisterDateBetweenAndStoreUserType(LocalDate startDate, LocalDate endDate, String storeUserType);
+    List<StoreUser> findByRegisterDateBetweenAndStore(LocalDate startDate, LocalDate endDate, Store store);
+    List<StoreUser> findByRegisterDateBetweenAndStoreUserTypeAndStore(LocalDate startDate, LocalDate endDate, String storeUserType, Store store);
 }

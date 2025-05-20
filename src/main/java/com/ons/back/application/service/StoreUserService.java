@@ -152,10 +152,10 @@ public class StoreUserService {
         List<StoreUser> storeUserList = new ArrayList<>();
 
         if(userTypeList == null || userTypeList.isEmpty()) {
-            storeUserList.addAll(storeUserRepository.findByRegisterDateBetween(startTime, endTime));
+            storeUserList.addAll(storeUserRepository.findByRegisterDateBetweenAndStore(startTime, endTime, store));
         } else {
             for(String type : userTypeList) {
-                storeUserList.addAll(storeUserRepository.findByRegisterDateBetweenAndStoreUserType(startTime, endTime, type));
+                storeUserList.addAll(storeUserRepository.findByRegisterDateBetweenAndStoreUserTypeAndStore(startTime, endTime, type, store));
             }
         }
 

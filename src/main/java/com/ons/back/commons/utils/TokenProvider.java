@@ -1,7 +1,6 @@
 package com.ons.back.commons.utils;
 
 import com.ons.back.application.service.TokenService;
-import com.ons.back.commons.dto.TokenResponse;
 import com.ons.back.commons.exception.TokenException;
 import com.ons.back.commons.exception.payload.ErrorStatus;
 import com.ons.back.persistence.domain.Token;
@@ -33,7 +32,7 @@ public class TokenProvider {
     private final SecretKey secretKey;
     private final TokenService tokenService;
 
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000;
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30L;
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60L * 24;
     private static final String KEY_ROLE = "ROLE_USER";
 

@@ -1,7 +1,6 @@
 package com.ons.back.commons.utils;
 
 import com.ons.back.application.service.TokenService;
-import com.ons.back.commons.dto.TokenResponse;
 import com.ons.back.commons.exception.TokenException;
 import com.ons.back.commons.exception.payload.ErrorStatus;
 import com.ons.back.persistence.domain.Token;

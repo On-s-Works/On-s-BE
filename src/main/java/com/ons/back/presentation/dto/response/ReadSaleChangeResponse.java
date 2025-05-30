@@ -2,14 +2,11 @@ package com.ons.back.presentation.dto.response;
 
 import lombok.Builder;
 
+import java.util.List;
+
 @Builder
 public record ReadSaleChangeResponse(
-        Double firstMonthSaleAmount,
-        Double secondMonthSaleAmount,
-        Double thirdMonthSaleAmount,
-        Double forthMonthSaleAmount,
-        Double fifthMonthSaleAmount,
-        Double sixthMonthSaleAmount,
+        List<MonthSaleAmountResponse> monthSaleAmountList,
         Double totalAmount,
         Double avg
 ) {

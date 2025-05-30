@@ -186,13 +186,17 @@ public class StoreService {
 
         Double total = monthSaleAmounts.stream().mapToDouble(Double::doubleValue).sum();
 
+        List<MonthSaleAmountResponse> monthSaleAmountList = new ArrayList<>();
+
+        for(int i = 0; i < 6; i++) {
+            monthSaleAmountList.add(MonthSaleAmountResponse.builder()
+                    .dateTime(dates.get(i))
+                    .amount(monthSaleAmounts.get(i))
+                    .build());
+        }
+
         return ReadSaleChangeResponse.builder()
-                .firstMonthSaleAmount(monthSaleAmounts.get(0))
-                .secondMonthSaleAmount(monthSaleAmounts.get(1))
-                .thirdMonthSaleAmount(monthSaleAmounts.get(2))
-                .forthMonthSaleAmount(monthSaleAmounts.get(3))
-                .fifthMonthSaleAmount(monthSaleAmounts.get(4))
-                .sixthMonthSaleAmount(monthSaleAmounts.get(5))
+                .monthSaleAmountList(monthSaleAmountList)
                 .totalAmount(total)
                 .avg(total/6)
                 .build();

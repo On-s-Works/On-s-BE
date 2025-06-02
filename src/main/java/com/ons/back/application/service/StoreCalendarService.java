@@ -24,9 +24,9 @@ public class StoreCalendarService {
     private final StoreRepository storeRepository;
 
     @Transactional(readOnly = true)
-    public List<ReadCalendarResponse> getStoreCalendarByYearAndMonth(Long storeId, Integer year, Integer month) {
+    public List<ReadCalendarResponse> getStoreCalendarByYearAndMonth(Long storeId, Integer year, Integer month, Integer day) {
 
-        LocalDateTime monthStart = LocalDateTime.of(year, month, 1, 0, 0);
+        LocalDateTime monthStart = LocalDateTime.of(year, month, day, 0, 0);
         LocalDateTime monthEnd = monthStart.with(TemporalAdjusters.lastDayOfMonth())
                 .withHour(23).withMinute(59).withSecond(59);
 

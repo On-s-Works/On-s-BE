@@ -30,8 +30,8 @@ public class StoreCalendarController {
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     @GetMapping
-    public ResponseEntity<List<ReadCalendarResponse>> getCalendar(@RequestParam Long storeId, @RequestParam Integer year, @RequestParam Integer month) {
-        return ResponseEntity.ok(storeCalendarService.getStoreCalendarByYearAndMonth(storeId, year, month));
+    public ResponseEntity<List<ReadCalendarResponse>> getCalendar(@RequestParam Long storeId, @RequestParam Integer year, @RequestParam Integer month, @RequestParam Integer day) {
+        return ResponseEntity.ok(storeCalendarService.getStoreCalendarByYearAndMonth(storeId, year, month, day));
     }
 
     @Operation(summary = "가게 일정 생성", description = "가게의 일정을 생성합니다.")

@@ -112,7 +112,7 @@ public class ItemService {
     public List<ReadLowStockItemResponse> getLowStockItemFalse(String userKey, Long storeId) {
         Store store = validUserStore(userKey, storeId);
 
-        return itemRepository.findTop4ByStoreAndIsActiveTrueOrderByItemStockAscAndIsOrderedFalse(store).stream().map(ReadLowStockItemResponse::fromEntity).toList();
+        return itemRepository.findTop4ByStoreAndIsActiveTrueAndIsOrderedFalseOrderByItemStockAsc(store).stream().map(ReadLowStockItemResponse::fromEntity).toList();
     }
 
     public void createItem(String userKey, CreateItemRequest request, MultipartFile file) {

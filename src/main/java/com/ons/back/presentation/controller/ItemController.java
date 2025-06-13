@@ -85,6 +85,17 @@ public class ItemController {
         return ResponseEntity.ok(itemService.getLowStockItem(user.getUsername(), storeId));
     }
 
+    @Operation(summary = "재고 임박 상품 (주문 안된 것) 조회", description = "재고 임박 상품을 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "재고 임박 상품 조회 성공", content = @Content(schema = @Schema(implementation = List.class))),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    @GetMapping("/low-stock-false")
+    public ResponseEntity<List<ReadLowStockItemResponse>> getLowStockItemsFalse(@AuthenticationPrincipal UserDetails user, @RequestParam Long storeId) {
+        return ResponseEntity.ok(itemService.getLowStockItemFalse(user.getUsername(), storeId));
+    }
+
     @Operation(summary = "제품 삭제", description = "제품 삭제.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "제품 삭제 성공"),

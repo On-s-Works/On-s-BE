@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
@@ -15,11 +16,17 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 import java.time.Duration;
 
-@RequiredArgsConstructor
 @Component
 public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
     private final TokenProvider tokenProvider;
+    private final String frontRedirect;
+
+    @Autowired
+    public CustomOAuth2SuccessHandler(TokenProvider tokenProvider, @Value("${frontend.redirect.uri}") String frontRedirect) {
+        this.tokenProvider = tokenProvider;
+        this.frontRedirect = frontRedirect;
+    }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
@@ -40,7 +47,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
 
         response.addHeader("Set-Cookie", refreshTokenCookie.toString());
 
-        String redirectUri = UriComponentsBuilder.fromUriString("https://on-s-fe.vercel.app/auth/callback")
+        String redirectUri = UriComponentsBuilder.fromUriString(frontRedirect)
                 .queryParam("accessToken", accessToken)
                 .build().toUriString();
 

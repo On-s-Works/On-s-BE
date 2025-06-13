@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Transactional
@@ -132,7 +133,7 @@ public class StoreUserService {
         return storeUserRepository.save(request.toEntity(store)).getId();
     }
 
-    public Page<ReadStoreUserResponse> getStoreUser(String userKey, Long storeId, String sortType, LocalDate startTime, LocalDate endTime, List<String> userTypeList, Pageable pageable) {
+    public Page<ReadStoreUserResponse> getStoreUser(String userKey, Long storeId, String sortType, LocalDate startTime, LocalDate endTime, List<String> userTypeList, Pageable pageable, String searchKeyword) {
 
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new ApplicationException(
@@ -158,6 +159,14 @@ public class StoreUserService {
             for(String type : userTypeList) {
                 storeUserList.addAll(storeUserRepository.findByRegisterDateBetweenAndStoreUserTypeAndStore(startTime, endTime, type, store));
             }
+        }
+
+        if (searchKeyword != null && !searchKeyword.isBlank()) {
+            String keywordLower = searchKeyword.toLowerCase();
+            storeUserList = storeUserList.stream()
+                    .filter(u -> u.getStoreUserName().toLowerCase().contains(keywordLower)
+                            || u.getStoreUserDisplayName().toLowerCase().contains(keywordLower))
+                    .collect(Collectors.toList());
         }
 
         Comparator<StoreUser> comparator = switch (sortType.toLowerCase()) {

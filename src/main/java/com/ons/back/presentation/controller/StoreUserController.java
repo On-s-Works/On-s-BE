@@ -56,6 +56,7 @@ public class StoreUserController {
                                                                     @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate startTime,
                                                                     @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate endTime,
                                                                     @RequestParam(required = false) List<String> userTypeList,
+                                                                    @RequestParam(required = false) String searchKeyword,
                                                                     Pageable pageable) {
         if (startTime == null) {
             startTime = LocalDate.now();
@@ -65,7 +66,7 @@ public class StoreUserController {
             endTime = LocalDate.now().plusDays(1);
         }
 
-        return ResponseEntity.ok(storeUserService.getStoreUser(user.getUsername(), storeId, sortType, startTime, endTime, userTypeList, pageable));
+        return ResponseEntity.ok(storeUserService.getStoreUser(user.getUsername(), storeId, sortType, startTime, endTime, userTypeList, pageable, searchKeyword));
     }
 
     @Operation(summary = "가게 사용자 생성", description = "가게 사용자 생성.")

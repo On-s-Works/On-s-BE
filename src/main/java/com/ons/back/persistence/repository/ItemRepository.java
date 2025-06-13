@@ -9,6 +9,7 @@ import java.util.List;
 public interface ItemRepository extends JpaRepository<Item, Long> {
     List<Item> findByStore_StoreIdAndIsActiveTrue(Long storeId);
     List<Item> findTop4ByStoreAndIsActiveTrueOrderByItemStockAsc(Store store);
+    List<Item> findTop4ByStoreAndIsActiveTrueAndIsOrderedFalseOrderByItemStockAsc(Store store);
     List<Item> findByStore_StoreIdAndItemStockAndIsActiveTrue(Long storeId, Integer itemStock);
     List<Item> findByStore_StoreIdAndIsActiveTrueAndItemStockGreaterThan(Long storeId, Integer stock);
     List<Item> findByStore_StoreIdAndIsOrderedAndIsActiveTrue(Long storeId, Boolean isOrdered);

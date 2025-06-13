@@ -10,7 +10,8 @@ public record ReadItemResponse(
         Integer itemStock,
         Double itemPrice,
         String itemImage,
-        String barcode
+        String barcode,
+        Boolean isOrdered
 ) {
     public static ReadItemResponse fromEntity(Item item) {
         return ReadItemResponse.builder()
@@ -20,6 +21,7 @@ public record ReadItemResponse(
                 .itemPrice(item.getItemPrice())
                 .itemImage(item.getItemImage())
                 .barcode(item.getBarcode())
+                .isOrdered(item.getIsOrdered())
                 .build();
     }
 }

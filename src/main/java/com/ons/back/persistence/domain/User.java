@@ -54,6 +54,14 @@ public class User {
         this.password = encodedPassword;
     }
 
+    public void updateAgreeTerms(Boolean agreeTerms) {
+        this.agreeTerms = agreeTerms;
+    }
+
+    public void updatePhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
     @Builder
     public User(Long userId, String uid, String password, String username, String email, String phoneNumber, Boolean agreeTerms, String userKey, ProviderType providerType, Role role) {
         this.userId = userId;

@@ -3,6 +3,7 @@ package com.ons.back.presentation.controller;
 import com.ons.back.application.service.UserService;
 import com.ons.back.commons.dto.PrincipalDetails;
 import com.ons.back.presentation.dto.request.UpdatePasswordRequest;
+import com.ons.back.presentation.dto.request.UpdateSocialLoginUserRequest;
 import com.ons.back.presentation.dto.response.ReadUserResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -44,6 +45,18 @@ public class UserController {
     @PutMapping("/password")
     public ResponseEntity<Void> updatePassword(@AuthenticationPrincipal UserDetails user, @RequestBody UpdatePasswordRequest request) {
         userService.updatePassword(user.getUsername(), request.password());
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "소셜 로그인 이후 정보 업데이트 하는 api 입니다.", description = "소셜 로그인 이후 정보 업데이트 하는 api 입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "변경 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    @PutMapping("/password")
+    public ResponseEntity<Void> updateSocialLoginUser(@AuthenticationPrincipal UserDetails user, @RequestBody UpdateSocialLoginUserRequest request) {
+        userService.updateTermsAndPhoneNumber(user.getUsername(), request);
         return ResponseEntity.noContent().build();
     }
 }

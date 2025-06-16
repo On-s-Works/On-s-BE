@@ -54,7 +54,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    @PutMapping("/password")
+    @PutMapping("/social-login")
     public ResponseEntity<Void> updateSocialLoginUser(@AuthenticationPrincipal UserDetails user, @RequestBody UpdateSocialLoginUserRequest request) {
         userService.updateTermsAndPhoneNumber(user.getUsername(), request);
         return ResponseEntity.noContent().build();

@@ -92,8 +92,10 @@ public class StoreService {
             store.updateAddress(request.baseAddress(), request.addressDetail());
         }
 
-        if(store.getStoreImage() != null && file != null && !file.isEmpty()) {
-            storageService.deleteImage(store.getStoreImage());
+        if(file != null && !file.isEmpty()) {
+            if(store.getStoreImage() != null) {
+                storageService.deleteImage(store.getStoreImage());
+            }
             store.updateImage(storageService.uploadImage(file));
         }
     }

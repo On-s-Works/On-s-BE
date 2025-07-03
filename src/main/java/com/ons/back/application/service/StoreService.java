@@ -93,7 +93,9 @@ public class StoreService {
         }
 
         if(file != null && !file.isEmpty()) {
-            storageService.deleteImage(store.getStoreImage());
+            if(store.getStoreImage() != null) {
+                storageService.deleteImage(store.getStoreImage());
+            }
             store.updateImage(storageService.uploadImage(file));
         }
     }

@@ -59,4 +59,10 @@ public class UserController {
         userService.updateTermsAndPhoneNumber(user.getUsername(), request);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteUser(@AuthenticationPrincipal UserDetails user) {
+        userService.deleteByUserKey(user.getUsername());
+        return ResponseEntity.noContent().build();
+    }
 }

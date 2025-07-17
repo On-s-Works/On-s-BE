@@ -57,4 +57,8 @@ public class UserService {
             user.updatePhoneNumber(request.phoneNumber());
         }
     }
+
+    public void deleteByUserKey(String userKey) {
+        userRepository.deleteByUserKey(userKey);
+    }
 }

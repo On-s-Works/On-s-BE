@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLRestriction;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -45,6 +48,12 @@ public class Store {
 
     @Column(name = "is_manage")
     boolean isManage;
+
+    @Column(name = "created_date")
+    LocalDate createdDate;
+
+    @Column(name = "open_time")
+    LocalTime openTime;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -88,8 +97,16 @@ public class Store {
         this.storeImage = imageUrl;
     }
 
+    public void updateCreatedDate(LocalDate createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public void updateOpenTime(LocalTime openTime) {
+        this.openTime = openTime;
+    }
+
     @Builder
-    public Store(Long storeId, String storeType, String storeName, String baseAddress, String addressDetail, String storeImage, String storeNumber, boolean isActive, boolean isSale, boolean isManage, User user) {
+    public Store(Long storeId, String storeType, String storeName, String baseAddress, String addressDetail, String storeImage, String storeNumber, boolean isActive, boolean isSale, boolean isManage, LocalDate createdDate, LocalTime openTime, User user) {
         this.storeId = storeId;
         this.storeType = storeType;
         this.storeName = storeName;
@@ -100,6 +117,8 @@ public class Store {
         this.isActive = isActive;
         this.isSale = isSale;
         this.isManage = isManage;
+        this.createdDate = createdDate;
+        this.openTime = openTime;
         this.user = user;
     }
 }

@@ -5,6 +5,8 @@ import com.ons.back.persistence.domain.type.AuthType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
+import java.time.LocalDateTime;
+
 
 public record SendEmailRequest(
 
@@ -19,6 +21,7 @@ public record SendEmailRequest(
                 .authCode(authCode)
                 .authType(AuthType.RESET)
                 .isActive((byte)1)
+                .createdAt(LocalDateTime.now())
                 .build();
     }
 }

@@ -74,6 +74,7 @@ public class StoreController {
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> updateStoreName(@AuthenticationPrincipal UserDetails user, @RequestPart(value = "request") UpdateStoreRequest request, @RequestPart(value = "file", required = false) MultipartFile file) {
         storeService.updateStore(user.getUsername(), request, file);
+        storeService.updateStore(user.getUsername(), request, file);
         return ResponseEntity.noContent().build();
     }
 

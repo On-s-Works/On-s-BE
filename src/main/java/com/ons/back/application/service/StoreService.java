@@ -92,6 +92,14 @@ public class StoreService {
             store.updateAddress(request.baseAddress(), request.addressDetail());
         }
 
+        if(request.openTime() != null) {
+            store.updateOpenTime(request.openTime());
+        }
+
+        if(request.createdDate() != null) {
+            store.updateCreatedDate(request.createdDate());
+        }
+
         if(file != null && !file.isEmpty()) {
             if(store.getStoreImage() != null) {
                 storageService.deleteImage(store.getStoreImage());

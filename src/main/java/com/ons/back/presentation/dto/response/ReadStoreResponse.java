@@ -3,6 +3,8 @@ package com.ons.back.presentation.dto.response;
 import com.ons.back.persistence.domain.Store;
 import lombok.Builder;
 
+import java.time.LocalTime;
+
 @Builder
 public record ReadStoreResponse(
         Long id,
@@ -13,7 +15,9 @@ public record ReadStoreResponse(
         boolean isSale,
         boolean isManage,
         String storeImage,
-        String storeNumber
+        String storeNumber,
+        LocalTime openTime
+
 ) {
     public static ReadStoreResponse fromEntity(Store store) {
         return ReadStoreResponse.builder()
@@ -26,6 +30,7 @@ public record ReadStoreResponse(
                 .isManage(store.isManage())
                 .storeImage(store.getStoreImage())
                 .storeNumber(store.getStoreNumber())
+                .openTime(store.getOpenTime())
                 .build();
     }
 }

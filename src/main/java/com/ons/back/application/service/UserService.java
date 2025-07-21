@@ -2,7 +2,9 @@ package com.ons.back.application.service;
 
 import com.ons.back.commons.exception.ApplicationException;
 import com.ons.back.commons.exception.payload.ErrorStatus;
+import com.ons.back.persistence.domain.Store;
 import com.ons.back.persistence.domain.User;
+import com.ons.back.persistence.repository.StoreRepository;
 import com.ons.back.persistence.repository.UserRepository;
 import com.ons.back.presentation.dto.request.UpdateSocialLoginUserRequest;
 import com.ons.back.presentation.dto.response.ReadUserResponse;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +22,7 @@ import java.time.LocalDateTime;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final StoreRepository storeRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
@@ -59,6 +63,16 @@ public class UserService {
     }
 
     public void deleteByUserKey(String userKey) {
+
+        User user = userRepository.findByUserKey(userKey)
+                        .orElseThrow(() -> new ApplicationException(
+                                ErrorStatus.toErrorStatus("해당하는 유저가 없습니다.", 404, LocalDateTime.now())
+                        ));
+
+        List<Store> storeList = storeRepository.findByUser_UserId(user.getUserId());
+
+        storeList.forEach(Store::delete);
+
         userRepository.deleteByUserKey(userKey);
     }
 }

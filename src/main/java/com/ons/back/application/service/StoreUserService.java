@@ -104,11 +104,20 @@ public class StoreUserService {
         return ReadStoreUserAnalyticsResponse.builder()
                 .totalCount(size)
                 .todayRegisterCount(todayRegisterStoreUser)
-                .todayIncreaseRate(yesterdayRegisterStoreUser == 0 ? 100.0 : (double)todayRegisterStoreUser / yesterdayRegisterStoreUser)
+                .todayIncreaseRate(
+                        todayRegisterStoreUser == 0 ? 0.0 :
+                                (yesterdayRegisterStoreUser == 0 ? 100.0 : (double) todayRegisterStoreUser / yesterdayRegisterStoreUser)
+                )
                 .weekRegisterCount(thisWeekRegisterStoreUser)
-                .weekIncreaseRate(lastWeekRegisterStoreUser == 0 ? 100.0 : (double)thisWeekRegisterStoreUser / lastWeekRegisterStoreUser)
+                .weekIncreaseRate(
+                        thisWeekRegisterStoreUser == 0 ? 0.0 :
+                                (lastWeekRegisterStoreUser == 0 ? 100.0 : (double) thisWeekRegisterStoreUser / lastWeekRegisterStoreUser)
+                )
                 .monthRegisterCount(thisMonthRegisterStoreUser)
-                .monthIncreaseRate(lastMonthRegisterStoreUser == 0 ? 100.0 : (double)thisMonthRegisterStoreUser / lastMonthRegisterStoreUser)
+                .monthIncreaseRate(
+                        thisMonthRegisterStoreUser == 0 ? 0.0 :
+                                (lastMonthRegisterStoreUser == 0 ? 100.0 : (double) thisMonthRegisterStoreUser / lastMonthRegisterStoreUser)
+                )
                 .build();
     }
 

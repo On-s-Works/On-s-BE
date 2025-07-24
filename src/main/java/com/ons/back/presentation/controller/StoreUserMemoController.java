@@ -4,7 +4,6 @@ import com.ons.back.application.service.StoreUserMemoService;
 import com.ons.back.presentation.dto.request.CreateStoreUserMemoRequest;
 import com.ons.back.presentation.dto.request.DeleteStoreUserMemoRequest;
 import com.ons.back.presentation.dto.request.UpdateStoreUserMemoRequest;
-import com.ons.back.presentation.dto.response.ReadStoreUserAnalyticsResponse;
 import com.ons.back.presentation.dto.response.ReadStoreUserMemoResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

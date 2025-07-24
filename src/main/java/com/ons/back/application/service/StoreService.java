@@ -213,10 +213,14 @@ public class StoreService {
     }
 
     private static SaleReportResponse toSaleReportResponse(List<Order> orderList, Double firstTotalAmount, Double secondTotalAmount) {
+        double increasePercent =
+                firstTotalAmount == 0 ? 0.0 :
+                        (secondTotalAmount == 0 ? 100.0 : (firstTotalAmount - secondTotalAmount) / secondTotalAmount * 100);
+
         return SaleReportResponse.builder()
                 .saleCount(orderList.size())
                 .sumOfTotalAmount(firstTotalAmount)
-                .increasePercent(secondTotalAmount != 0 ? (firstTotalAmount - secondTotalAmount) / secondTotalAmount * 100 : 100)
+                .increasePercent(increasePercent)
                 .build();
     }
 

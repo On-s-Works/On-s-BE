@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Table(name = "user")
 @Entity
@@ -21,7 +22,7 @@ public class User {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "uid")
+    @Column(name = "uid", unique = true, nullable = false)
     private String uid;
 
     @Column(name = "password")
@@ -30,10 +31,10 @@ public class User {
     @Column(name = "username")
     private String username;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
 
-    @Column(name = "phone_number")
+    @Column(name = "phone_number", unique = true)
     private String phoneNumber;
 
     @Column(name = "agree_terms")
@@ -41,6 +42,9 @@ public class User {
 
     @Column(name = "user_key", unique = true)
     private String userKey;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
     @Column(name = "provider_type")
     @Enumerated(EnumType.STRING)
@@ -63,7 +67,7 @@ public class User {
     }
 
     @Builder
-    public User(Long userId, String uid, String password, String username, String email, String phoneNumber, Boolean agreeTerms, String userKey, ProviderType providerType, Role role) {
+    public User(Long userId, String uid, String password, String username, String email, String phoneNumber, Boolean agreeTerms, String userKey, LocalDateTime createdAt, ProviderType providerType, Role role) {
         this.userId = userId;
         this.uid = uid;
         this.password = password;
@@ -72,6 +76,7 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.agreeTerms = agreeTerms;
         this.userKey = userKey;
+        this.createdAt = createdAt;
         this.providerType = providerType;
         this.role = role;
     }

@@ -3,10 +3,13 @@ package com.ons.back.application.service;
 import com.ons.back.commons.exception.ApplicationException;
 import com.ons.back.commons.exception.payload.ErrorStatus;
 import com.ons.back.persistence.domain.PhoneAuthentication;
+import com.ons.back.persistence.domain.User;
 import com.ons.back.persistence.domain.type.AuthType;
 import com.ons.back.persistence.repository.PhoneAuthenticationRepository;
+import com.ons.back.persistence.repository.UserRepository;
 import com.ons.back.presentation.dto.request.SMSAuthRequest;
 import com.ons.back.presentation.dto.request.SendMessageRequest;
+import com.ons.back.presentation.dto.response.CheckResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +26,7 @@ public class SmsAuthenticationService {
 
     private final SmsSendService smsSendService;
     private final PhoneAuthenticationRepository phoneAuthenticationRepository;
+    private final UserRepository userRepository;
 
     public void sendSMSAuth(SendMessageRequest request){
 
@@ -36,7 +40,7 @@ public class SmsAuthenticationService {
         phoneAuthenticationRepository.save(phoneAuthentication);
     }
 
-    public void checkSMSAuthCode(SMSAuthRequest request) {
+    public CheckResponse checkSMSAuthCode(SMSAuthRequest request) {
 
         PhoneAuthentication phoneAuthentication = phoneAuthenticationRepository.findByPhoneNumberAndAuthCodeAndIsActiveAndCreatedAtAfter(request.phoneNumber(), request.authCode(), (byte)1, LocalDateTime.now().minusMinutes(10))
                 .orElseThrow(() -> new ApplicationException(
@@ -44,6 +48,13 @@ public class SmsAuthenticationService {
                 ));
 
         phoneAuthentication.updateIsActive((byte)0);
+
+        User user = userRepository.findByPhoneNumber(request.phoneNumber())
+                .orElseThrow(() -> new ApplicationException(
+                        ErrorStatus.toErrorStatus("유저를 찾을 수 없습니다.", 404, LocalDateTime.now())
+                ));
+
+        return CheckResponse.fromUser(user);
     }
 
     public String createCode() {

@@ -3,10 +3,13 @@ package com.ons.back.application.service;
 import com.ons.back.commons.exception.ApplicationException;
 import com.ons.back.commons.exception.payload.ErrorStatus;
 import com.ons.back.persistence.domain.EmailAuthentication;
+import com.ons.back.persistence.domain.User;
 import com.ons.back.persistence.domain.type.AuthType;
 import com.ons.back.persistence.repository.EmailAuthenticationRepository;
+import com.ons.back.persistence.repository.UserRepository;
 import com.ons.back.presentation.dto.request.EmailAuthRequest;
 import com.ons.back.presentation.dto.request.SendEmailRequest;
+import com.ons.back.presentation.dto.response.CheckResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +26,7 @@ public class EmailAuthenticationService {
 
     private final EmailAuthenticationRepository emailAuthenticationRepository;
     private final EmailSendService emailSendService;
+    private final UserRepository userRepository;
 
     public void sendEmailAuth(SendEmailRequest request){
 
@@ -36,7 +40,7 @@ public class EmailAuthenticationService {
         emailAuthenticationRepository.save(request.toResetEntity(authCode));
     }
 
-    public void checkEmailAuthCode(EmailAuthRequest request) {
+    public CheckResponse checkEmailAuthCode(EmailAuthRequest request) {
 
         EmailAuthentication emailAuthentication = emailAuthenticationRepository.findByEmailAndAuthCodeAndIsActiveAndCreatedAtAfter(request.email(), request.authCode(), (byte)1, LocalDateTime.now().minusMinutes(10))
                 .orElseThrow(() -> new ApplicationException(
@@ -44,6 +48,13 @@ public class EmailAuthenticationService {
                 ));
 
         emailAuthentication.updateIsActive((byte)0);
+
+        User user = userRepository.findByEmail(request.email())
+                .orElseThrow(() -> new ApplicationException(
+                        ErrorStatus.toErrorStatus("해당하는 유저가 없습니다.", 404, LocalDateTime.now())
+                ));
+
+        return CheckResponse.fromUser(user);
     }
 
     public String createCode() {

@@ -7,6 +7,7 @@ import com.ons.back.persistence.domain.type.Role;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record SignUpRequest(
         String uid,
@@ -27,6 +28,7 @@ public record SignUpRequest(
                 .agreeTerms(agreeTerms)
                 .phoneNumber(phoneNumber)
                 .username(username)
+                .createdAt(LocalDateTime.now())
                 .build();
     }
 }

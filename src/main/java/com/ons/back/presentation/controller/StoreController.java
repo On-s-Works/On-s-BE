@@ -5,6 +5,7 @@ import com.ons.back.presentation.dto.request.CreateStoreRequest;
 import com.ons.back.presentation.dto.request.UpdateStoreRequest;
 import com.ons.back.presentation.dto.response.ReadSaleChangeResponse;
 import com.ons.back.presentation.dto.response.ReadSaleReportResponse;
+import com.ons.back.presentation.dto.response.ReadStoreDetailResponse;
 import com.ons.back.presentation.dto.response.ReadStoreResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -49,7 +50,7 @@ public class StoreController {
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     @GetMapping("/{storeId}")
-    public ResponseEntity<ReadStoreResponse> getStore(@PathVariable Long storeId) {
+    public ResponseEntity<ReadStoreDetailResponse> getStore(@PathVariable Long storeId) {
         return ResponseEntity.ok(storeService.getStoreById(storeId));
     }
 
@@ -73,7 +74,6 @@ public class StoreController {
     })
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> updateStoreName(@AuthenticationPrincipal UserDetails user, @RequestPart(value = "request") UpdateStoreRequest request, @RequestPart(value = "file", required = false) MultipartFile file) {
-        storeService.updateStore(user.getUsername(), request, file);
         storeService.updateStore(user.getUsername(), request, file);
         return ResponseEntity.noContent().build();
     }

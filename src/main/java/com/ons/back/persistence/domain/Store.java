@@ -50,10 +50,10 @@ public class Store {
     boolean isManage;
 
     @Column(name = "created_date")
-    LocalDate createdDate;
+    private LocalDate createdDate;
 
     @Column(name = "open_time")
-    LocalTime openTime;
+    private LocalTime openTime;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

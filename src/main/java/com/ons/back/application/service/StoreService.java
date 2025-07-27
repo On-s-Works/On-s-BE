@@ -42,8 +42,8 @@ public class StoreService {
     }
 
     @Transactional(readOnly = true)
-    public ReadStoreResponse getStoreById(Long storeId) {
-        return ReadStoreResponse.fromEntity(storeRepository.findById(storeId)
+    public ReadStoreDetailResponse getStoreById(Long storeId) {
+        return ReadStoreDetailResponse.fromEntity(storeRepository.findById(storeId)
                 .orElseThrow(() -> new ApplicationException(
                         ErrorStatus.toErrorStatus("해당하는 가게가 없습니다.", 404, LocalDateTime.now())
                 )));

@@ -137,12 +137,24 @@ public class ItemService {
                          ErrorStatus.toErrorStatus("해당하는 아이템이 없습니다.", 404, LocalDateTime.now())
                  ));
 
-         if(!request.isOrdered().equals(item.getIsOrdered())) {
+         if(request.isOrdered() != null && !request.isOrdered().equals(item.getIsOrdered())) {
              item.updateIsOrdered(request.isOrdered());
          }
 
-         if(!request.itemStock().equals(item.getItemStock())) {
+         if(request.itemStock() != null && !request.itemStock().equals(item.getItemStock())) {
              item.updateItemStock(request.itemStock());
+         }
+
+         if(request.itemPrice() != null && !request.itemPrice().equals(item.getItemPrice())) {
+             item.updateItemPrice(request.itemPrice());
+         }
+
+         if(request.itemPurchasePrice() != null && request.itemPurchasePrice().equals(item.getItemPurchasePrice())) {
+             item.updateItemPurchasePrice(request.itemPurchasePrice());
+         }
+
+         if(request.barcode() != null && !request.barcode().equals(item.getBarcode())) {
+             item.updateBarcode(request.barcode());
          }
     }
 

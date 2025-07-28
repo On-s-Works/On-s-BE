@@ -45,6 +45,22 @@ public class StoreUser {
     @JoinColumn(name = "store_id")
     private Store store;
 
+    public void updateStoreUserName(String storeUserName) {
+        this.storeUserName = storeUserName;
+    }
+
+    public void updateStoreUserDisplayName(String storeUserDisplayName) {
+        this.storeUserDisplayName = storeUserDisplayName;
+    }
+
+    public void updateStoreUserType(String storeUserType) {
+        this.storeUserType = storeUserType;
+    }
+
+    public void updateRegisterDate(LocalDate registerDate) {
+        this.registerDate = registerDate;
+    }
+
     @Builder
     public StoreUser(Long id, String storeUserName, String storeUserDisplayName, LocalDate registerDate, Double storeUserPoint, Double storeUserTotalPayment, LocalDate storeUserLastLogin, String storeUserType, Store store) {
         this.id = id;

@@ -12,6 +12,7 @@ import com.ons.back.persistence.repository.UserRepository;
 import com.ons.back.presentation.dto.request.CreateStoreUserMessageRequest;
 import com.ons.back.presentation.dto.request.CreateStoreUserRequest;
 import com.ons.back.presentation.dto.request.DeleteStoreUserRequest;
+import com.ons.back.presentation.dto.request.UpdateStoreUserRequest;
 import com.ons.back.presentation.dto.response.ReadStoreUserAnalyticsResponse;
 import com.ons.back.presentation.dto.response.ReadStoreUserResponse;
 import lombok.RequiredArgsConstructor;
@@ -233,6 +234,46 @@ public class StoreUserService {
         }
 
 //        smsSendService.sendSmsContent();
+    }
+
+    public void updateStoreUser(String userKey, UpdateStoreUserRequest request) {
+
+        Store store = storeRepository.findById(request.storeId())
+                .orElseThrow(() -> new ApplicationException(
+                        ErrorStatus.toErrorStatus("해당하는 가게가 없습니다.", 404, LocalDateTime.now())
+                ));
+
+        User user = userRepository.findByUserKey(userKey)
+                .orElseThrow(() -> new ApplicationException(
+                        ErrorStatus.toErrorStatus("해당하는 유저가 없습니다.", 404, LocalDateTime.now())
+                ));
+
+        if(!store.getUser().equals(user)) {
+            throw new ApplicationException(
+                    ErrorStatus.toErrorStatus("해당 가게의 주인이 아닙니다.", 400, LocalDateTime.now())
+            );
+        }
+
+        StoreUser storeUser = storeUserRepository.findById(request.storeUserId())
+                .orElseThrow(() -> new ApplicationException(
+                        ErrorStatus.toErrorStatus("해당하는 가게 회원이 없습니다.", 404, LocalDateTime.now())
+                ));
+
+        if(request.displayName() != null && !request.displayName().equals(storeUser.getStoreUserDisplayName())) {
+            storeUser.updateStoreUserDisplayName(request.displayName());
+        }
+
+        if(request.registerDate() != null && !request.registerDate().equals(storeUser.getRegisterDate())) {
+            storeUser.updateRegisterDate(request.registerDate());
+        }
+
+        if(request.storeUserType() != null && !request.storeUserType().equals(storeUser.getStoreUserType())) {
+            storeUser.updateStoreUserType(request.storeUserType());
+        }
+
+        if(request.storeUserName() != null && !request.storeUserName().equals(storeUser.getStoreUserName())) {
+            storeUser.updateStoreUserName(request.storeUserName());
+        }
     }
 
     public void deleteStoreUser(String userKey, DeleteStoreUserRequest request) {

@@ -4,6 +4,9 @@ public record UpdateItemRequest(
         Long itemId,
         Integer itemStock,
         Boolean isOrdered,
+        String barcode,
+        Double itemPurchasePrice,
+        Double itemPrice,
         Long storeId
 ) {
 }

@@ -62,6 +62,18 @@ public class Item {
         this.isOrdered = isOrdered;
     }
 
+    public void updateItemPurchasePrice(Double itemPurchasePrice) {
+        this.itemPurchasePrice = itemPurchasePrice;
+    }
+
+    public void updateItemPrice(Double itemPrice) {
+        this.itemPrice = itemPrice;
+    }
+
+    public void updateBarcode(String barcode) {
+        this.barcode = barcode;
+    }
+
     @Builder
     public Item(Long id, String itemName, Double itemPrice, Integer itemStock, String barcode, String itemImage, Double itemPurchasePrice, Boolean isOrdered, boolean isActive, LocalDateTime createdAt, Store store) {
         this.id = id;

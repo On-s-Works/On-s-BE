@@ -4,6 +4,7 @@ import com.ons.back.application.service.StoreUserService;
 import com.ons.back.presentation.dto.request.CreateStoreUserMessageRequest;
 import com.ons.back.presentation.dto.request.CreateStoreUserRequest;
 import com.ons.back.presentation.dto.request.DeleteStoreUserRequest;
+import com.ons.back.presentation.dto.request.UpdateStoreUserRequest;
 import com.ons.back.presentation.dto.response.ReadStoreUserAnalyticsResponse;
 import com.ons.back.presentation.dto.response.ReadStoreUserResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -89,6 +90,17 @@ public class StoreUserController {
     @PostMapping("/message")
     public ResponseEntity<Void> sendMessage(@AuthenticationPrincipal UserDetails user, @RequestBody CreateStoreUserMessageRequest request) {
         storeUserService.sendStoreUserMessage(user.getUsername(), request);
+        return ResponseEntity.noContent().build();
+    }
+    @Operation(summary = "가게 사용자 수정", description = "가게 사용자 수정.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "가게 사용자 수정 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    @PutMapping
+    public ResponseEntity<Void> updateStoreUser(@AuthenticationPrincipal UserDetails user, @RequestBody UpdateStoreUserRequest request) {
+        storeUserService.updateStoreUser(user.getUsername(), request);
         return ResponseEntity.noContent().build();
     }
 

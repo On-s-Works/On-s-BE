@@ -9,7 +9,8 @@ public record ReadOrderItemResponse(
         Integer quantity,
         Double subtotal,
         String itemName,
-        Double itemPrice
+        Double itemPrice,
+        Boolean isSale
 ) {
     public static ReadOrderItemResponse fromEntity(OrderItem orderItem) {
         return ReadOrderItemResponse.builder()
@@ -18,6 +19,7 @@ public record ReadOrderItemResponse(
                 .subtotal(orderItem.getSubtotal())
                 .itemName(orderItem.getItem().getItemName())
                 .itemPrice(orderItem.getItem().getItemPrice())
+                .isSale(orderItem.getItem().getIsSale())
                 .build();
     }
 }

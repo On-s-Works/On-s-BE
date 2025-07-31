@@ -39,9 +39,9 @@ public class ItemService {
 
         if(saleStatus != null){
             if(saleStatus) {
-                itemList.addAll(itemRepository.findByStore_StoreIdAndIsActiveTrueAndItemStockGreaterThan(storeId, 1));
+                itemList.addAll(itemRepository.findByStore_StoreIdAndIsActiveTrueAndIsSaleGreaterThan(storeId, saleStatus));
             } else {
-                itemList.addAll(itemRepository.findByStore_StoreIdAndItemStockAndIsActiveTrue(storeId, 0));
+                itemList.addAll(itemRepository.findByStore_StoreIdAndIsSaleAndIsActiveTrue(storeId, saleStatus));
             }
         }
 

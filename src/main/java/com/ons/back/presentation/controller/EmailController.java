@@ -4,6 +4,7 @@ import com.ons.back.application.service.EmailAuthenticationService;
 import com.ons.back.commons.exception.ValidationFailedException;
 import com.ons.back.presentation.dto.request.EmailAuthRequest;
 import com.ons.back.presentation.dto.request.SendEmailRequest;
+import com.ons.back.presentation.dto.response.CheckResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -50,14 +51,12 @@ public class EmailController {
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     @PostMapping("/check")
-    public ResponseEntity<Void> checkCode(@RequestBody @Valid EmailAuthRequest request, BindingResult bindingResult) {
+    public ResponseEntity<CheckResponse> checkCode(@RequestBody @Valid EmailAuthRequest request, BindingResult bindingResult) {
 
         if(bindingResult.hasErrors()) {
             throw new ValidationFailedException(bindingResult);
         }
 
-        emailAuthenticationService.checkEmailAuthCode(request);
-
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(emailAuthenticationService.checkEmailAuthCode(request));
     }
 }

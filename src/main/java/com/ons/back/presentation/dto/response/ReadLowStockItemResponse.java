@@ -10,7 +10,8 @@ public record ReadLowStockItemResponse(
         String barcode,
         Double itemPrice,
         Integer itemStock,
-        Boolean isOrdered
+        Boolean isOrdered,
+        Boolean isSale
 ) {
     public static ReadLowStockItemResponse fromEntity(Item item) {
         return ReadLowStockItemResponse.builder()
@@ -20,6 +21,7 @@ public record ReadLowStockItemResponse(
                 .itemPrice(item.getItemPrice())
                 .itemStock(item.getItemStock())
                 .isOrdered(item.getIsOrdered())
+                .isSale(item.getIsSale())
                 .build();
     }
 }

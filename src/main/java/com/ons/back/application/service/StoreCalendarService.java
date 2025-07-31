@@ -27,7 +27,7 @@ public class StoreCalendarService {
     public List<ReadCalendarResponse> getStoreCalendarByYearAndMonth(Long storeId, Integer year, Integer month, Integer day) {
 
         LocalDateTime monthStart = LocalDateTime.of(year, month, day, 0, 0);
-        LocalDateTime monthEnd = monthStart.with(TemporalAdjusters.lastDayOfMonth())
+        LocalDateTime monthEnd = monthStart.plusMonths(1).with(TemporalAdjusters.lastDayOfMonth())
                 .withHour(23).withMinute(59).withSecond(59);
 
         return storeCalendarRepository.findByStore_StoreIdAndStartGreaterThanEqualAndStartLessThanEqual(storeId, monthStart, monthEnd)

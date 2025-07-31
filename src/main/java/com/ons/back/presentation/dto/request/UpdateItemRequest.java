@@ -7,6 +7,7 @@ public record UpdateItemRequest(
         String barcode,
         Double itemPurchasePrice,
         Double itemPrice,
+        Boolean isSale,
         Long storeId
 ) {
 }

@@ -10,7 +10,8 @@ public record ReadSaledItemResponse(
         String barcode,
         Double itemSalePrice,
         Integer saleQuantity,
-        Double totalPrice
+        Double totalPrice,
+        Boolean isSale
 ) {
     public static ReadSaledItemResponse from(Item item, Integer saleQuantity) {
         return ReadSaledItemResponse.builder()
@@ -20,6 +21,7 @@ public record ReadSaledItemResponse(
                 .itemSalePrice(item.getItemPrice())
                 .saleQuantity(saleQuantity)
                 .totalPrice(item.getItemPrice() * saleQuantity)
+                .isSale(item.getIsSale())
                 .build();
     }
 }

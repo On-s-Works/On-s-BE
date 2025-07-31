@@ -43,6 +43,9 @@ public class Item {
     @Column(name = "is_active")
     private boolean isActive;
 
+    @Column(name = "is_sale")
+    private Boolean isSale;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -75,7 +78,7 @@ public class Item {
     }
 
     @Builder
-    public Item(Long id, String itemName, Double itemPrice, Integer itemStock, String barcode, String itemImage, Double itemPurchasePrice, Boolean isOrdered, boolean isActive, LocalDateTime createdAt, Store store) {
+    public Item(Long id, String itemName, Double itemPrice, Integer itemStock, String barcode, String itemImage, Double itemPurchasePrice, Boolean isOrdered, boolean isActive, Boolean isSale, LocalDateTime createdAt, Store store) {
         this.id = id;
         this.itemName = itemName;
         this.itemPrice = itemPrice;
@@ -85,6 +88,7 @@ public class Item {
         this.itemPurchasePrice = itemPurchasePrice;
         this.isOrdered = isOrdered;
         this.isActive = isActive;
+        this.isSale = isSale;
         this.createdAt = createdAt;
         this.store = store;
     }

@@ -22,6 +22,7 @@ public record CreateItemRequest(
                 .itemImage(itemImage)
                 .isActive(true)
                 .isOrdered(false)
+                .isSale(true)
                 .store(store)
                 .createdAt(LocalDateTime.now())
                 .build();

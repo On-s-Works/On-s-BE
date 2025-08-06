@@ -4,13 +4,11 @@ import com.ons.back.commons.exception.ApplicationException;
 import com.ons.back.commons.exception.payload.ErrorStatus;
 import com.ons.back.persistence.domain.*;
 import com.ons.back.persistence.domain.type.OrderStatusType;
-import com.ons.back.persistence.domain.type.PaymentType;
 import com.ons.back.persistence.repository.*;
 import com.ons.back.presentation.dto.request.CreateItemRequest;
 import com.ons.back.presentation.dto.request.UpdateItemRequest;
 import com.ons.back.presentation.dto.response.ReadItemResponse;
 import com.ons.back.presentation.dto.response.ReadLowStockItemResponse;
-import com.ons.back.presentation.dto.response.ReadOrderItemResponse;
 import com.ons.back.presentation.dto.response.ReadSaledItemResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -128,7 +126,7 @@ public class ItemService {
         itemRepository.save(request.toEntity(store, itemImage));
     }
 
-    public void updateItem(String userKey, UpdateItemRequest request) {
+    public void updateItem(String userKey, UpdateItemRequest request, MultipartFile file) {
 
         validUserStore(userKey, request.storeId());
 
@@ -136,6 +134,13 @@ public class ItemService {
                  .orElseThrow(() -> new ApplicationException(
                          ErrorStatus.toErrorStatus("해당하는 아이템이 없습니다.", 404, LocalDateTime.now())
                  ));
+
+        if(file != null && !file.isEmpty()) {
+            if(item.getItemImage() != null) {
+                storageService.deleteImage(item.getItemImage());
+            }
+            item.updateItemImage(storageService.uploadImage(file));
+        }
 
          if(request.isOrdered() != null && !request.isOrdered().equals(item.getIsOrdered())) {
              item.updateIsOrdered(request.isOrdered());
@@ -155,6 +160,10 @@ public class ItemService {
 
          if(request.barcode() != null && !request.barcode().equals(item.getBarcode())) {
              item.updateBarcode(request.barcode());
+         }
+
+         if(request.isSale() != null && !request.isSale().equals(item.getIsSale())) {
+             item.updateIsSale(request.isSale());
          }
     }
 

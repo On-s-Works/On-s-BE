@@ -77,6 +77,14 @@ public class Item {
         this.barcode = barcode;
     }
 
+    public void updateIsSale(Boolean isSale) {
+        this.isSale = isSale;
+    }
+
+    public void updateItemImage(String itemImage) {
+        this.itemImage = itemImage;
+    }
+
     @Builder
     public Item(Long id, String itemName, Double itemPrice, Integer itemStock, String barcode, String itemImage, Double itemPurchasePrice, Boolean isOrdered, boolean isActive, Boolean isSale, LocalDateTime createdAt, Store store) {
         this.id = id;

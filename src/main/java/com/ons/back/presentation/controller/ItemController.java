@@ -38,7 +38,9 @@ public class ItemController {
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> addItem(@AuthenticationPrincipal UserDetails user, @RequestPart(value = "request") CreateItemRequest request, @RequestPart(value = "file", required = false) MultipartFile file) {
+    public ResponseEntity<Void> addItem(@AuthenticationPrincipal UserDetails user,
+                                        @RequestPart(value = "request") CreateItemRequest request,
+                                        @RequestPart(value = "file", required = false) MultipartFile file) {
         itemService.createItem(user.getUsername(), request, file);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -114,9 +116,11 @@ public class ItemController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    @PutMapping
-    public ResponseEntity<Void> updateItem(@RequestBody UpdateItemRequest request, @AuthenticationPrincipal UserDetails user) {
-        itemService.updateItem(user.getUsername(), request);
+    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> updateItem(@RequestPart(value = "request") UpdateItemRequest request,
+                                           @RequestPart(value = "file") MultipartFile file,
+                                           @AuthenticationPrincipal UserDetails user) {
+        itemService.updateItem(user.getUsername(), request, file);
         return ResponseEntity.noContent().build();
     }
 }

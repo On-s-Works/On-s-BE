@@ -72,6 +72,7 @@ public class UserService {
         List<Store> storeList = storeRepository.findByUser_UserId(user.getUserId());
 
         storeList.forEach(Store::delete);
+        storeList.forEach(store -> store.updateUser(null));
 
         userRepository.deleteByUserKey(userKey);
     }

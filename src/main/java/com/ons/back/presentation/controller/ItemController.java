@@ -118,7 +118,7 @@ public class ItemController {
     })
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> updateItem(@RequestPart(value = "request") UpdateItemRequest request,
-                                           @RequestPart(value = "file") MultipartFile file,
+                                           @RequestPart(required = false, value = "file") MultipartFile file,
                                            @AuthenticationPrincipal UserDetails user) {
         itemService.updateItem(user.getUsername(), request, file);
         return ResponseEntity.noContent().build();

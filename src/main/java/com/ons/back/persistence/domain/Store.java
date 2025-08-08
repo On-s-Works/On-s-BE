@@ -105,6 +105,10 @@ public class Store {
         this.openTime = openTime;
     }
 
+    public void updateUser(User user) {
+        this.user = user;
+    }
+
     @Builder
     public Store(Long storeId, String storeType, String storeName, String baseAddress, String addressDetail, String storeImage, String storeNumber, boolean isActive, boolean isSale, boolean isManage, LocalDate createdDate, LocalTime openTime, User user) {
         this.storeId = storeId;

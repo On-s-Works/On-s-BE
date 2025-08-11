@@ -39,7 +39,18 @@ public class AuthService {
         response.setHeader("Authorization", "");
     }
 
+    @Transactional(readOnly = true)
     public boolean checkDuplicatedUid(String uid) {
         return !userRepository.existsByUid(uid);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean checkDuplicatedEmail(String email) {
+        return !userRepository.existsByEmail(email);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean checkDuplicatedPhoneNumber(String phoneNumber) {
+        return !userRepository.existsByPhoneNumber(phoneNumber);
     }
 }

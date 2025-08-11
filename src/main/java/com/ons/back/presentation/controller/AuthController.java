@@ -60,4 +60,14 @@ public class AuthController {
     public ResponseEntity<Boolean> checkDuplicatedUid(@RequestParam String uid) {
         return ResponseEntity.ok(authService.checkDuplicatedUid(uid));
     }
+
+    @GetMapping("/check-email")
+    public ResponseEntity<Boolean> checkEmail(@RequestParam String email) {
+        return ResponseEntity.ok(authService.checkDuplicatedEmail(email));
+    }
+
+    @GetMapping("/check-phone-number")
+    public ResponseEntity<Boolean> checkPhoneNumber(@RequestParam String phoneNumber) {
+        return ResponseEntity.ok(authService.checkDuplicatedPhoneNumber(phoneNumber));
+    }
 }

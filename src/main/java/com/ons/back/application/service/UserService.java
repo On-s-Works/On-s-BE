@@ -73,6 +73,7 @@ public class UserService {
 
         storeList.forEach(Store::delete);
         storeList.forEach(store -> store.updateUser(null));
+        storeRepository.flush();
 
         userRepository.deleteByUserKey(userKey);
     }

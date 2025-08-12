@@ -104,6 +104,8 @@ public class SecurityConfig {
                                         new AntPathRequestMatcher("/"),
                                         new AntPathRequestMatcher("/auth/signup"),
                                         new AntPathRequestMatcher("/auth/check"),
+                                        new AntPathRequestMatcher("/auth/check-email"),
+                                        new AntPathRequestMatcher("/auth/check-phone-number"),
                                         new AntPathRequestMatcher("/oauth2/**"),
                                         new AntPathRequestMatcher("/login/**"),
                                         new AntPathRequestMatcher("/logout/**"),

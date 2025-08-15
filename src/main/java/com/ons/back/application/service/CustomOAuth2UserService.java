@@ -2,6 +2,8 @@ package com.ons.back.application.service;
 
 import com.ons.back.commons.dto.OAuth2UserInfo;
 import com.ons.back.commons.dto.PrincipalDetails;
+import com.ons.back.commons.exception.ApplicationException;
+import com.ons.back.commons.exception.payload.ErrorStatus;
 import com.ons.back.persistence.domain.User;
 import com.ons.back.persistence.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @Service
@@ -30,6 +33,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
 
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfo.of(registrationId, oAuth2UserAttributes);
+
+        if(userRepository.existsByEmail(oAuth2UserInfo.email())) {
+           throw new ApplicationException(
+                   ErrorStatus.toErrorStatus("해당하는 이메일이 존재합니다.", 400, LocalDateTime.now())
+           );
+        }
 
         User user = userRepository.findByEmailAndProviderType(oAuth2UserInfo.email(), oAuth2UserInfo.providerType())
                 .orElseGet(() -> userRepository.save(oAuth2UserInfo.toEntity()));

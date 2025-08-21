@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +36,12 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfo.of(registrationId, oAuth2UserAttributes);
 
         if(userRepository.existsByEmail(oAuth2UserInfo.email())) {
-           throw new OAuth2AuthenticationException("해당하는 이메일이 이미 가입되어있습니다.");
+            OAuth2Error error = new OAuth2Error(
+                    "email_exists",
+                    "해당하는 이메일이 이미 가입되어있습니다.",
+                    null
+            );
+            throw new OAuth2AuthenticationException(error, error.getDescription());
         }
 
         User user = userRepository.findByEmailAndProviderType(oAuth2UserInfo.email(), oAuth2UserInfo.providerType())

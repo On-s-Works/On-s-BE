@@ -35,9 +35,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfo.of(registrationId, oAuth2UserAttributes);
 
         if(userRepository.existsByEmail(oAuth2UserInfo.email())) {
-           throw new ApplicationException(
-                   ErrorStatus.toErrorStatus("해당하는 이메일이 존재합니다.", 400, LocalDateTime.now())
-           );
+           throw new OAuth2AuthenticationException("해당하는 이메일이 이미 가입되어있습니다.");
         }
 
         User user = userRepository.findByEmailAndProviderType(oAuth2UserInfo.email(), oAuth2UserInfo.providerType())

@@ -6,6 +6,7 @@ import com.ons.back.commons.filter.CustomLoginFilter;
 import com.ons.back.commons.filter.TokenAuthenticationFilter;
 import com.ons.back.commons.filter.TokenExceptionFilter;
 import com.ons.back.commons.handler.CustomAccessDeniedHandler;
+import com.ons.back.commons.handler.CustomOAuth2FailureHandler;
 import com.ons.back.commons.handler.CustomOAuth2SuccessHandler;
 import com.ons.back.commons.utils.TokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,7 @@ public class SecurityConfig {
 
     private final CustomOAuth2UserService oAuth2UserService;
     private final CustomOAuth2SuccessHandler oAuth2SuccessHandler;
+    private final CustomOAuth2FailureHandler oAuth2FailureHandler;
     private final TokenAuthenticationFilter tokenAuthenticationFilter;
     private final TokenProvider tokenProvider;
     private final AuthenticationConfiguration configuration;
@@ -125,6 +127,7 @@ public class SecurityConfig {
                 .oauth2Login(oauth ->
                 oauth.userInfoEndpoint(c -> c.userService(oAuth2UserService))
                         .successHandler(oAuth2SuccessHandler)
+                        .failureHandler(oAuth2FailureHandler)
         )
                 .addFilterBefore(new CustomLoginFilter(authenticationManager(configuration), tokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(tokenAuthenticationFilter, CustomLoginFilter.class)

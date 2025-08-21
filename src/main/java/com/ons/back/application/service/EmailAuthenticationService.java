@@ -34,7 +34,7 @@ public class EmailAuthenticationService {
 
         emailSendService.sendEmail(request.email(), authCode);
 
-        List<EmailAuthentication> emailAuthenticationList = emailAuthenticationRepository.findByEmailAndAuthType(request.email(), AuthType.JOIN);
+        List<EmailAuthentication> emailAuthenticationList = emailAuthenticationRepository.findByEmailAndAuthType(request.email(), AuthType.RESET);
         emailAuthenticationList.forEach(emailAuthentication -> emailAuthentication.updateIsActive((byte)0));
 
         emailAuthenticationRepository.save(request.toResetEntity(authCode));

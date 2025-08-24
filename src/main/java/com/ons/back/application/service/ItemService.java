@@ -35,23 +35,13 @@ public class ItemService {
 
         List<Item> itemList = new ArrayList<>();
 
-        if(saleStatus != null){
-            if(saleStatus) {
-                itemList.addAll(itemRepository.findByStore_StoreIdAndIsActiveTrueAndIsSaleGreaterThan(storeId, saleStatus));
-            } else {
-                itemList.addAll(itemRepository.findByStore_StoreIdAndIsSaleAndIsActiveTrue(storeId, saleStatus));
-            }
-        }
-
-        if(isOrdered != null) {
-            if(isOrdered) {
-                itemList.addAll(itemRepository.findByStore_StoreIdAndIsOrderedAndIsActiveTrue(storeId, true));
-            } else {
-                itemList.addAll(itemRepository.findByStore_StoreIdAndIsOrderedAndIsActiveTrue(storeId, false));
-            }
-        }
-
-        if(isOrdered == null && saleStatus == null) {
+        if(isOrdered != null && saleStatus != null) {
+            itemList.addAll(itemRepository.findByStore_StoreIdAndIsActiveTrueAndIsSaleAndIsOrdered(storeId, saleStatus, isOrdered));
+        } else if(saleStatus != null){
+            itemList.addAll(itemRepository.findByStore_StoreIdAndIsActiveTrueAndIsSale(storeId, saleStatus));
+        } else if(isOrdered != null) {
+            itemList.addAll(itemRepository.findByStore_StoreIdAndIsOrderedAndIsActiveTrue(storeId, isOrdered));
+        } else {
             itemList.addAll(itemRepository.findByStore_StoreIdAndIsActiveTrue(storeId));
         }
 
@@ -154,7 +144,7 @@ public class ItemService {
              item.updateItemPrice(request.itemPrice());
          }
 
-         if(request.itemPurchasePrice() != null && request.itemPurchasePrice().equals(item.getItemPurchasePrice())) {
+         if(request.itemPurchasePrice() != null && !request.itemPurchasePrice().equals(item.getItemPurchasePrice())) {
              item.updateItemPurchasePrice(request.itemPurchasePrice());
          }
 

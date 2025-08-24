@@ -3,6 +3,7 @@ package com.ons.back.presentation.controller;
 import com.ons.back.application.service.EmailAuthenticationService;
 import com.ons.back.commons.exception.ValidationFailedException;
 import com.ons.back.presentation.dto.request.EmailAuthRequest;
+import com.ons.back.presentation.dto.request.EmailChangePasswordRequest;
 import com.ons.back.presentation.dto.request.SendEmailRequest;
 import com.ons.back.presentation.dto.response.CheckResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,10 +14,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -46,7 +44,7 @@ public class EmailController {
 
     @Operation(summary = "이메일을 검증합니다.", description = "이메일을 검증합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "이메일 발송 성공"),
+            @ApiResponse(responseCode = "200", description = "이메일 검증 성공"),
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
@@ -58,5 +56,17 @@ public class EmailController {
         }
 
         return ResponseEntity.ok(emailAuthenticationService.checkEmailAuthCode(request));
+    }
+
+    @Operation(summary = "이메일 인증으로 비밀번호를 변경합니다.", description = "이메일로 비밀번호를 변경합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "변경 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    @PutMapping("/password")
+    public ResponseEntity<Void> changePasswordByEmail(@RequestBody EmailChangePasswordRequest request) {
+        emailAuthenticationService.emailAuthAndChangePassword(request);
+        return ResponseEntity.noContent().build();
     }
 }

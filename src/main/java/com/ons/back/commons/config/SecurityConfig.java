@@ -102,6 +102,7 @@ public class SecurityConfig {
                                         new AntPathRequestMatcher("/sms/check"),
                                         new AntPathRequestMatcher("/email/send"),
                                         new AntPathRequestMatcher("/email/check"),
+                                        new AntPathRequestMatcher("/email/password"),
                                         new AntPathRequestMatcher("/error"),
                                         new AntPathRequestMatcher("/"),
                                         new AntPathRequestMatcher("/auth/signup"),

@@ -1,6 +1,7 @@
 package com.ons.back.presentation.controller;
 
 import com.ons.back.application.service.StoreUserService;
+import com.ons.back.commons.exception.ValidationFailedException;
 import com.ons.back.presentation.dto.request.CreateStoreUserMessageRequest;
 import com.ons.back.presentation.dto.request.CreateStoreUserRequest;
 import com.ons.back.presentation.dto.request.DeleteStoreUserRequest;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +22,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -77,7 +80,12 @@ public class StoreUserController {
             @ApiResponse(responseCode = "500", description = "서버 오류")
     })
     @PostMapping
-    public ResponseEntity<Long> createStoreUser(@AuthenticationPrincipal UserDetails user, @RequestBody CreateStoreUserRequest request) {
+    public ResponseEntity<Long> createStoreUser(@AuthenticationPrincipal UserDetails user, @RequestBody @Valid CreateStoreUserRequest request, BindingResult bindingResult) {
+
+        if(bindingResult.hasErrors()) {
+            throw new ValidationFailedException(bindingResult);
+        }
+
         return ResponseEntity.ok(storeUserService.createStoreUser(user.getUsername(), request));
     }
 

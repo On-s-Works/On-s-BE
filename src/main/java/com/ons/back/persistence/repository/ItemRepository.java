@@ -11,6 +11,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     List<Item> findTop4ByStoreAndIsActiveTrueOrderByItemStockAsc(Store store);
     List<Item> findTop4ByStoreAndIsActiveTrueAndIsOrderedFalseOrderByItemStockAsc(Store store);
     List<Item> findByStore_StoreIdAndIsSaleAndIsActiveTrue(Long storeId, Boolean isSale);
-    List<Item> findByStore_StoreIdAndIsActiveTrueAndIsSaleGreaterThan(Long storeId, Boolean isSale);
+    List<Item> findByStore_StoreIdAndIsActiveTrueAndIsSale(Long storeId, Boolean isSale);
     List<Item> findByStore_StoreIdAndIsOrderedAndIsActiveTrue(Long storeId, Boolean isOrdered);
+    List<Item> findByStore_StoreIdAndIsActiveTrueAndIsSaleAndIsOrdered(Long storeId, Boolean isSale, Boolean isOrdered);
 }
